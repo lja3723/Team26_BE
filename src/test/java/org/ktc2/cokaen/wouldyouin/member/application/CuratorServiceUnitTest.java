@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.ktc2.cokaen.wouldyouin.auth.MemberIdentifier;
 import org.ktc2.cokaen.wouldyouin.image.application.MemberImageService;
 import org.ktc2.cokaen.wouldyouin._global.testdata.MemberData;
 import org.ktc2.cokaen.wouldyouin.member.persist.BaseMemberRepository;
@@ -99,10 +100,11 @@ class CuratorServiceUnitTest {
     @DisplayName("큐레이터 삭제 테스트")
     void deleteById() {
         // given
+        MemberIdentifier identifier = MemberData.R.curator1.memberIdentifier;
         given(curatorRepository.findById(validCurator.getId())).willReturn(Optional.of(validCurator));
 
         // when
-        curatorService.deleteById(validCurator.getId());
+        curatorService.deleteByMemberIdentifier(identifier);
 
         // then
         then(curatorRepository).should(times(1)).delete(validCurator);

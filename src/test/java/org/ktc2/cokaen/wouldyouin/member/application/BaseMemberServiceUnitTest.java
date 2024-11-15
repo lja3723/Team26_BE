@@ -22,6 +22,7 @@ import org.ktc2.cokaen.wouldyouin._global.testdata.MemberData.R.curator1;
 import org.ktc2.cokaen.wouldyouin._global.testdata.MemberData.R.host1;
 import org.ktc2.cokaen.wouldyouin._global.testdata.MemberData.R.normal1;
 import org.ktc2.cokaen.wouldyouin._global.testdata.MemberData.R.welcome1;
+import org.ktc2.cokaen.wouldyouin.auth.MemberIdentifier;
 import org.ktc2.cokaen.wouldyouin.member.api.dto.MemberResponse;
 import org.ktc2.cokaen.wouldyouin.member.exception.EmailAlreadyExistsException;
 import org.ktc2.cokaen.wouldyouin.member.persist.BaseMember;
@@ -59,6 +60,7 @@ class BaseMemberServiceUnitTest {
     private BaseMemberService baseMemberService;
 
     private static Map<Long, BaseMember> members;
+    private static Map<Long, MemberIdentifier> identifiers;
     private static final Member validMember = MemberData.normal1.entity.get();
     private static final Member validWelcomeMember = MemberData.welcome1.entity.get();
     private static final Host validHost = MemberData.host1.entity.get();
@@ -71,6 +73,11 @@ class BaseMemberServiceUnitTest {
             validHost.getId(), validHost,
             validCurator.getId(), validCurator,
             validWelcomeMember.getId(), validWelcomeMember);
+        identifiers = Map.of(
+            validMember.getId(), normal1.memberIdentifier,
+            validHost.getId(), host1.memberIdentifier,
+            validCurator.getId(), curator1.memberIdentifier,
+            validWelcomeMember.getId(), welcome1.memberIdentifier);
     }
 
     @BeforeEach
@@ -118,7 +125,7 @@ class BaseMemberServiceUnitTest {
     @ParameterizedTest
     @ValueSource(longs = {normal1.id, curator1.id, host1.id, welcome1.id})
     @DisplayName("각 유형의 사용자를 찾고 응답 반환하는 메서드 테스트")
-    void findById(long id) {
+    void findByMemberIdentifier(long id) {
         // given
         given(derivedMemberServiceFactory.get(MemberType.normal)).willReturn(mockMemberService);
         given(derivedMemberServiceFactory.get(MemberType.host)).willReturn(mockHostService);
@@ -129,7 +136,7 @@ class BaseMemberServiceUnitTest {
         given(mockCuratorService.getMemberResponseById(any())).willReturn(memberResponse);
 
         // when
-        baseMemberService.findById(id);
+        baseMemberService.findByMemberIdentifier(id);
 
         // then
         MemberType mappedType = welcomeTypeMapping(members.get(id).getMemberType());
@@ -168,17 +175,18 @@ class BaseMemberServiceUnitTest {
     @ParameterizedTest
     @ValueSource(longs = {normal1.id, curator1.id, host1.id, welcome1.id})
     @DisplayName("각 유형의 사용자를 제거하는 메서드 테스트")
-    void deleteById(long id) {
+    void deleteByMemberIdentifier(long id) {
         // given
+        MemberIdentifier identifier = identifiers.get(id);
         given(derivedMemberServiceFactory.get(MemberType.normal)).willReturn(mockMemberService);
         given(derivedMemberServiceFactory.get(MemberType.host)).willReturn(mockHostService);
         given(derivedMemberServiceFactory.get(MemberType.curator)).willReturn(mockCuratorService);
-        willDoNothing().given(mockMemberService).deleteById(any());
-        willDoNothing().given(mockHostService).deleteById(any());
-        willDoNothing().given(mockCuratorService).deleteById(any());
+        willDoNothing().given(mockMemberService).deleteByMemberIdentifier(any());
+        willDoNothing().given(mockHostService).deleteByMemberIdentifier(any());
+        willDoNothing().given(mockCuratorService).deleteByMemberIdentifier(any());
 
         // when
-        baseMemberService.deleteById(id);
+        baseMemberService.deleteByMemberIdentifier(identifier);
 
         // then
         MemberType mappedType = welcomeTypeMapping(members.get(id).getMemberType());

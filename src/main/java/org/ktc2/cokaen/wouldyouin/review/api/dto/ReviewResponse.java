@@ -1,5 +1,6 @@
 package org.ktc2.cokaen.wouldyouin.review.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonRawValue;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -22,7 +23,7 @@ public class ReviewResponse {
     private int score;
     private String content;
 
-    public static ReviewResponse from(final Review review) {
+    public static ReviewResponse from(Review review) {
         Member member = review.getMember();
         Event event = review.getEvent();
         return ReviewResponse.builder()

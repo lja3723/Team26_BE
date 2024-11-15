@@ -9,6 +9,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -21,6 +22,7 @@ import org.ktc2.cokaen.wouldyouin.image.persist.MemberImage;
 import org.ktc2.cokaen.wouldyouin.like.persist.CuratorLike;
 import org.ktc2.cokaen.wouldyouin.like.persist.HostLike;
 import org.ktc2.cokaen.wouldyouin.member.api.dto.request.MemberAdditionalInfoRequest;
+import org.ktc2.cokaen.wouldyouin.member.api.dto.request.edit.MemberEditRequest;
 import org.ktc2.cokaen.wouldyouin.reservation.persist.Reservation;
 import org.ktc2.cokaen.wouldyouin.review.persist.Review;
 
@@ -61,8 +63,11 @@ public class Member extends BaseMember {
     private List<Review> reviews = new ArrayList<>();
 
     // for Curator
-    protected Member(AccountType accountType, MemberType memberType, String email, String nickname, String phone, MemberImage profileImage, String profileImageThumbNailUrl, Area area, Gender gender, String socialId) {
-        super(accountType, memberType, email, nickname, phone, profileImage, profileImageThumbNailUrl);
+    protected Member(AccountType accountType, MemberType memberType, String email, String nickname,
+        String phone, MemberImage profileImage, String profileImageThumbNailUrl, Area area,
+        Gender gender, String socialId) {
+        super(accountType, memberType, email, nickname, phone, profileImage,
+            profileImageThumbNailUrl);
         this.area = area;
         this.gender = gender;
         this.socialId = socialId;
@@ -70,8 +75,11 @@ public class Member extends BaseMember {
 
     @Builder
     // for public builder
-    protected Member(AccountType accountType, String email, String nickname, String phone, MemberImage profileImage, String profileImageThumbnailUrl, Area area, Gender gender, String socialId) {
-        this(accountType, MemberType.welcome, email, nickname, phone, profileImage, profileImageThumbnailUrl, area, gender, socialId);
+    protected Member(AccountType accountType, String email, String nickname, String phone,
+        MemberImage profileImage, String profileImageThumbnailUrl, Area area, Gender gender,
+        String socialId) {
+        this(accountType, MemberType.welcome, email, nickname, phone, profileImage,
+            profileImageThumbnailUrl, area, gender, socialId);
     }
 
     public void updateFrom(MemberAdditionalInfoRequest request) {
@@ -79,5 +87,14 @@ public class Member extends BaseMember {
         setMemberType(MemberType.normal);
         this.area = request.getArea();
         this.gender = request.getGender();
+    }
+
+    public void updateFrom(MemberEditRequest request, MemberImage profileImage,
+        String profileImageThumbnailUrl) {
+        Optional.ofNullable(request.getNickname()).ifPresent(this::setNickname);
+        Optional.ofNullable(request.getPhoneNumber()).ifPresent(this::setPhone);
+        Optional.ofNullable(request.getArea()).ifPresent(this::setArea);
+        setProfileImage(profileImage);
+        setProfileImageThumbnailUrl(profileImageThumbnailUrl);
     }
 }

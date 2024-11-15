@@ -13,16 +13,20 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Query("SELECT R FROM Reservation R JOIN FETCH R.member JOIN FETCH R.event "
         + "WHERE R.member.id = :memberId AND R.id < :lastId "
         + "ORDER BY R.id DESC")
-    Slice<Reservation> findByMemberIdOrderByReservationIdDesc(Long memberId, Long lastId, Pageable pageable);
+    Slice<Reservation> findByMemberIdOrderByReservationIdDesc(Long memberId, Long lastId,
+        Pageable pageable);
 
     @Query("SELECT R FROM Reservation R JOIN FETCH R.member JOIN FETCH R.event "
         + "WHERE R.event.id = :eventId AND R.id < :lastId "
         + "ORDER BY R.id DESC")
-    Slice<Reservation> findByEventIdOrderByReservationIdDesc(Long eventId, Long lastId, Pageable pageable);
+    Slice<Reservation> findByEventIdOrderByReservationIdDesc(Long eventId, Long lastId,
+        Pageable pageable);
 
     @Query("SELECT R FROM Reservation R JOIN FETCH R.member JOIN FETCH R.event "
         + "WHERE R.member.id = :memberId "
         + "AND R.event.id = :eventId "
-        + "AND R.event.endTime > CURRENT_TIMESTAMP")
+        + "AND R.member.id NOT IN "
+        + "(SELECT RV.member.id FROM Review RV "
+        + "WHERE RV.member.id = :memberId AND RV.event.id = :eventId)")
     List<Reservation> findByMemberIdAndEventId(Long memberId, Long eventId);
 }

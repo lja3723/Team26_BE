@@ -14,13 +14,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class CurationImageService extends ImageService<CurationCardImage> {
+public class CurationCardImageService extends ImageService<CurationCardImage> {
 
+    private final CurationCardImageRepository curationCardImageRepository;
     @Value("${image.upload.curation.child-path}")
     private String childPath;
-    private final CurationCardImageRepository curationCardImageRepository;
 
-    public CurationImageService(ImageStorageService imageStorageService, CurationCardImageRepository curationCardImageRepository) {
+    public CurationCardImageService(ImageStorageService imageStorageService,
+        CurationCardImageRepository curationCardImageRepository) {
         this.imageStorageService = imageStorageService;
         this.curationCardImageRepository = curationCardImageRepository;
     }
@@ -50,7 +51,7 @@ public class CurationImageService extends ImageService<CurationCardImage> {
     }
 
     @Override
-    protected void validateMemberId(MemberIdentifier identifier, CurationCardImage image) {
+    public void validateMemberId(MemberIdentifier identifier, CurationCardImage image) {
         if (!identifier.type().equals(MemberType.admin) &&
             !identifier.id().equals(image.getCurationCard().getCuration().getCurator().getId())) {
             throw new UnauthorizedException("해당 큐레이션 이미지에 접근할 권한이 없습니다.");

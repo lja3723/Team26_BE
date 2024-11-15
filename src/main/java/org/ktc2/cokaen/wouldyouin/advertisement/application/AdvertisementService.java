@@ -2,7 +2,6 @@ package org.ktc2.cokaen.wouldyouin.advertisement.application;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.ktc2.cokaen.wouldyouin._common.exception.EntityNotFoundException;
 import org.ktc2.cokaen.wouldyouin.advertisement.api.dto.AdvertisementRequest;
@@ -25,13 +24,16 @@ public class AdvertisementService {
 
     @Transactional(readOnly = true)
     public AdvertisementResponse getById(Long adId) {
-        return AdvertisementResponse.from(getByIdOrThrow(adId));
+        Advertisement ad = getByIdOrThrow(adId);
+        return AdvertisementResponse.from(ad, adImageService.getImageUrl(ad.getAdvertisementImage()));
     }
 
     @Transactional(readOnly = true)
     public List<AdvertisementResponse> getAllActiveAdvertisements() {
-        return adRepository.findAllActiveAdvertisements(LocalDateTime.now()).stream()
-            .map(AdvertisementResponse::from).toList();
+        List<Advertisement> advertisements = adRepository.findAllActiveAdvertisements(LocalDateTime.now());
+        return advertisements.stream()
+            .map(ad -> AdvertisementResponse.from(ad, adImageService.getImageUrl(ad.getAdvertisementImage())))
+            .toList();
     }
 
     @Transactional
@@ -39,7 +41,7 @@ public class AdvertisementService {
         AdvertisementImage adImage = adImageService.saveImage(image);
         Advertisement ad = adRepository.save(adRequest.toEntity(adImage));
         adImageService.setAdvertisement(adImage, ad);
-        return AdvertisementResponse.from(ad);
+        return AdvertisementResponse.from(ad, adImageService.getImageUrl(adImage));
     }
 
     @Transactional

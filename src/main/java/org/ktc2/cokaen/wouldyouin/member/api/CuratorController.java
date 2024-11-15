@@ -30,6 +30,6 @@ public class CuratorController {
 
     @PutMapping
     public ResponseEntity<ApiResponseBody<MemberResponse>> updateCurator(@Authorize(MemberType.curator) MemberIdentifier identifier, @RequestBody CuratorEditRequest request) {
-        return ApiResponse.ok(curatorService.updateCurator(identifier.id(), request));
+        return ApiResponse.ok(curatorService.updateCurator(identifier, request));
     }
 }

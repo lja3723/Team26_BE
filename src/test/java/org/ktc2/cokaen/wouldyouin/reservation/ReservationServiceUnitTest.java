@@ -161,7 +161,8 @@ class ReservationServiceUnitTest {
     @DisplayName("사용자는 해당 이벤트에 대한 예약이 없으면 리뷰를 작성할 수 없다.")
     void validateByMemberIdAndEventId() {
         // given
-        given(reservationRepository.findByMemberIdAndEventId(normal1.id, R.reservation1._Relation.event().getId())).willReturn(List.of());
+        given(reservationRepository.findByMemberIdAndEventId(normal1.id, R.reservation1._Relation.event().getId()))
+            .willReturn(List.of());
 
         // when
         ReservationNotFoundForReviewException exception =

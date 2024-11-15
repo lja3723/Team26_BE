@@ -1,6 +1,7 @@
 package org.ktc2.cokaen.wouldyouin._common.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +12,7 @@ public class ObjectMapperConfig {
     @Bean
     ObjectMapper objectMapper() {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new SimpleModule().addSerializer(String.class, new QuoteAsStringSerializer()));
         mapper.registerModule(new JavaTimeModule());
         return mapper;
     }

@@ -4,6 +4,5 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface HostRepository extends JpaRepository<Host, Long> {
-
-    Optional<Host> findByEmailAndHashedPassword(String email, String hashedPassword);
+    Optional<Host> findByEmail(String email);
 }

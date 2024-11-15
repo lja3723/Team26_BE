@@ -8,6 +8,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -18,6 +19,7 @@ import lombok.ToString;
 import org.ktc2.cokaen.wouldyouin._common.converter.HashtagConverter;
 import org.ktc2.cokaen.wouldyouin.event.persist.Event;
 import org.ktc2.cokaen.wouldyouin.image.persist.MemberImage;
+import org.ktc2.cokaen.wouldyouin.member.api.dto.request.edit.HostEditRequest;
 
 @Getter
 @Setter
@@ -52,5 +54,14 @@ public class Host extends BaseMember implements LikeableMember {
         this.intro = "";
         this.likes = 0;
         this.hashtags = new ArrayList<>();
+    }
+
+    public void updateFrom(HostEditRequest request, MemberImage profileImage, String profileImageThumbnailUrl) {
+        Optional.ofNullable(request.getNickname()).ifPresent(this::setNickname);
+        Optional.ofNullable(request.getPhoneNumber()).ifPresent(this::setPhone);
+        Optional.ofNullable(request.getIntro()).ifPresent(this::setIntro);
+        Optional.ofNullable(request.getHashtags()).ifPresent(this::setHashtags);
+        setProfileImage(profileImage);
+        setProfileImageThumbnailUrl(profileImageThumbnailUrl);
     }
 }

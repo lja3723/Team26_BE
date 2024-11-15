@@ -11,8 +11,6 @@ import org.ktc2.cokaen.wouldyouin.member.persist.Member;
 import org.ktc2.cokaen.wouldyouin.member.persist.MemberType;
 
 @Entity
-@EqualsAndHashCode(callSuper = true)
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class HostLike extends Like<Host> {
 

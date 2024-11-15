@@ -17,7 +17,7 @@ import org.ktc2.cokaen.wouldyouin.curation.persist.CurationCard;
 import org.ktc2.cokaen.wouldyouin.curation.persist.CurationRepository;
 import org.ktc2.cokaen.wouldyouin.event.application.EventService;
 import org.ktc2.cokaen.wouldyouin.event.persist.Event;
-import org.ktc2.cokaen.wouldyouin.image.application.CurationImageService;
+import org.ktc2.cokaen.wouldyouin.image.application.CurationCardImageService;
 import org.ktc2.cokaen.wouldyouin.image.persist.CurationCardImage;
 import org.ktc2.cokaen.wouldyouin.member.application.CuratorService;
 import org.ktc2.cokaen.wouldyouin.member.persist.Curator;
@@ -35,7 +35,7 @@ public class CurationService {
     private final CuratorService curatorService;
     private final EventService eventService;
     private final CurationCardService curationCardService;
-    private final CurationImageService curationImageService;
+    private final CurationCardImageService curationCardImageService;
 
     @Transactional(readOnly = true)
     public CurationResponse getById(Long curationId) {
@@ -45,9 +45,11 @@ public class CurationService {
 
     @Transactional(readOnly = true)
     public CurationSliceResponse getAllByAreaOrderByCreatedDateDesc(Area area, Pageable pageable, Long oldLastId) {
-        Slice<Curation> curations = curationRepository.findAllByAreaOrderByCreatedDateDesc(area, oldLastId, pageable);
+        Slice<Curation> curations = curationRepository.findAllByAreaOrderByCreatedDateDesc(area,
+            oldLastId, pageable);
         Long newLastId = getLastId(curations, oldLastId);
-        return CurationSliceResponse.from(getCurationResponses(curations), curations.getSize(), newLastId);
+        return CurationSliceResponse.from(getCurationResponses(curations), curations.getSize(),
+            newLastId);
     }
 
     @Transactional(readOnly = true)
@@ -55,7 +57,8 @@ public class CurationService {
         Slice<Curation> curations = curationRepository.findAllByCuratorOrderByCreatedDateDesc(
             curatorId, lastId, pageable);
         Long newLastId = getLastId(curations, lastId);
-        return CurationSliceResponse.from(getCurationResponses(curations), curations.getSize(), newLastId);
+        return CurationSliceResponse.from(getCurationResponses(curations), curations.getSize(),
+            newLastId);
     }
 
     @Transactional
@@ -68,8 +71,10 @@ public class CurationService {
             .map(eventService::getByIdOrThrow)
             .toList();
         Curation curation = curationRepository.save(
-            curationCreateRequest.toEntity(curator, curationCards, events, getThumbnailUrl(curationCards)));
-        curationCards.forEach(curationCard -> curationCardService.setCuration(curationCard, curation));
+            curationCreateRequest.toEntity(curator, curationCards, events,
+                getThumbnailUrl(curationCards)));
+        curationCards.forEach(
+            curationCard -> curationCardService.setCuration(curationCard, curation));
         return CurationResponse.from(curation, getCurationCardResponses(curation));
     }
 
@@ -77,10 +82,8 @@ public class CurationService {
     public CurationResponse update(MemberIdentifier identifier, Long curationId, CurationEditRequest curationEditRequest) {
         Curation curation = getByIdOrThrow(curationId);
         validateCuratorId(identifier, curation);
-        List<CurationCard> curationCards = curationEditRequest.getCurationCards().stream()
-            .map(curationCardService::create).toList();
-        List<Event> events = curationEditRequest.getEventIds().stream()
-            .map(eventService::getByIdOrThrow).toList();
+        List<CurationCard> curationCards = curationEditRequest.getCurationCards().stream().map(curationCardService::create).toList();
+        List<Event> events = curationEditRequest.getEventIds().stream().map(eventService::getByIdOrThrow).toList();
         curation.getCurationCards().forEach(card -> curationCardService.delete(identifier, card.getId()));
         curation.updateFrom(curationEditRequest, curationCards, events, getThumbnailUrl(curationCards));
         curationCards.forEach(curationCard -> curationCardService.setCuration(curationCard, curation));
@@ -104,13 +107,15 @@ public class CurationService {
     }
 
     private void validateCuratorId(MemberIdentifier identifier, Curation curation) {
-        if (!identifier.type().equals(MemberType.admin) && !identifier.id().equals(curation.getCurator().getId())) {
+        if (!identifier.type().equals(MemberType.admin) && !identifier.id()
+            .equals(curation.getCurator().getId())) {
             throw new UnauthorizedException("큐레이션에 접근할 권한이 없습니다.");
         }
     }
 
     private Curation getByIdOrThrow(Long id) throws EntityNotFoundException {
-        return curationRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("해당하는 큐레이션을 찾을 수 없습니다."));
+        return curationRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("해당하는 큐레이션을 찾을 수 없습니다."));
     }
 
     private List<CurationResponse> getCurationResponses(Slice<Curation> curations) {
@@ -123,7 +128,7 @@ public class CurationService {
         return curation.getCurationCards().stream()
             .map(curationCard -> CurationCardResponse.from(
                 curationCard, curationCard.getCurationCardImages().stream()
-                    .map(curationImageService::getImageUrl).toList()))
+                    .map(curationCardImageService::getImageUrl).toList()))
             .toList();
     }
 
@@ -133,7 +138,7 @@ public class CurationService {
             .map(CurationCard::getCurationCardImages)
             .map(List::getFirst)
             .map(CurationCardImage::getName)
-            .map(curationImageService::createThumbnail)
+            .map(curationCardImageService::createThumbnail)
             .orElse("");
     }
 }

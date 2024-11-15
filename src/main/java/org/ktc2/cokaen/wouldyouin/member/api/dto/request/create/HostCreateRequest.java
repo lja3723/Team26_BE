@@ -1,16 +1,21 @@
 package org.ktc2.cokaen.wouldyouin.member.api.dto.request.create;
 
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import org.ktc2.cokaen.wouldyouin.image.persist.MemberImage;
 import org.ktc2.cokaen.wouldyouin.member.persist.Host;
 
 @Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 @ToString
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class HostCreateRequest extends MemberCreateRequestBase {
 
     protected String phone;

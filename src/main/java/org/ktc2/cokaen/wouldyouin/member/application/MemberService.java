@@ -30,48 +30,55 @@ public class MemberService implements MemberServiceCommonBehavior {
         String thumbnailImageUrl = memberImageService.createThumbnail(profileImage.getName());
         Member member = memberRepository.save(request.toEntity(profileImage, thumbnailImageUrl));
         memberImageService.setBaseMember(profileImage, member);
-        return MemberResponse.from(member, memberImageService.getImageUrl(profileImage));
+        return MemberResponse.from(member, member.getProfileImage().getId(), memberImageService.getImageUrl(profileImage));
     }
 
-    // TODO : 리팩토링 꼭 할 것, 멤버 전체에 대해 연관관계 설정할 것
     @Transactional
-    public MemberResponse updateMember(Long memberId, MemberEditRequest editRequest) {
-        Member member = getByIdOrThrow(memberId);
-        Optional.ofNullable(editRequest.getNickname()).ifPresent(member::setNickname);
-        Optional.ofNullable(editRequest.getArea()).ifPresent(member::setArea);
-        Optional.ofNullable(editRequest.getPhoneNumber()).ifPresent(member::setPhone);
-        Optional.ofNullable(editRequest.getProfileImageId())
-            .map(memberImageService::getById)
-            .ifPresent((image) -> {
-                member.setProfileImage(image);
-                String url = memberImageService.createThumbnail(memberImageService.createThumbnail(image.getName()));
-                member.setProfileImageThumbnailUrl(url);
+    public MemberResponse updateMember(MemberIdentifier identifier, MemberEditRequest request) {
+        Member member = getByIdOrThrow(identifier.id());
+        MemberImage profileImage = member.getProfileImage();
+        String profileImageThumbnailUrl = member.getProfileImageThumbnailUrl();
+
+        if (Optional.ofNullable(request.getProfileImageId()).isPresent() && !request.getProfileImageId().equals(member.getProfileImage().getId())) {
+            MemberImage newProfileImage = memberImageService.getById(request.getProfileImageId());
+            Optional.ofNullable(newProfileImage.getBaseMember()).ifPresent(x -> {
+                memberImageService.validateMemberId(identifier, newProfileImage);
             });
-        return MemberResponse.from(member, memberImageService.getImageUrl(member.getProfileImage()));
+
+            MemberImage toDelete = profileImage;
+            member.setProfileImage(null);
+            memberImageService.deleteImage(identifier, toDelete.getId());
+            profileImage = memberImageService.getById(request.getProfileImageId());
+            profileImageThumbnailUrl = memberImageService.createThumbnail(profileImage.getName());
+            memberImageService.setBaseMember(profileImage, member);
+        }
+
+        member.updateFrom(request, profileImage, profileImageThumbnailUrl);
+        return MemberResponse.from(member, member.getProfileImage().getId(), memberImageService.getImageUrl(member.getProfileImage()));
     }
 
     @Transactional
     public MemberResponse updateWelcomeMember(Long welcomeMemberId, MemberAdditionalInfoRequest additionalInfoRequest) {
         Member member = getByIdOrThrow(welcomeMemberId);
-        // TODO : validate
         if (member.getMemberType() != MemberType.welcome) {
             throw new AdditionalInfoIllegalAccessException("최초 소셜로그인 후 추가정보를 기입하지 않은 사용자만 접근 가능합니다.");
         }
         member.updateFrom(additionalInfoRequest);
-        return MemberResponse.from(member, memberImageService.getImageUrl(member.getProfileImage()));
+        return MemberResponse.from(member, member.getProfileImage().getId(), memberImageService.getImageUrl(member.getProfileImage()));
     }
 
     @Override
     @Transactional
-    public void deleteById(Long id) {
-        memberRepository.delete(getByIdOrThrow(id));
+    public void deleteByMemberIdentifier(MemberIdentifier identifier) {
+        memberImageService.deleteImage(identifier, getByIdOrThrow(identifier.id()).getProfileImage().getId());
+        memberRepository.delete(getByIdOrThrow(identifier.id()));
     }
 
     @Override
     @Transactional(readOnly = true)
     public MemberResponse getMemberResponseById(Long id) {
         Member member = getByIdOrThrow(id);
-        return MemberResponse.from(member, memberImageService.getImageUrl(member.getProfileImage()));
+        return MemberResponse.from(member, member.getProfileImage().getId(), memberImageService.getImageUrl(member.getProfileImage()));
     }
 
     @Transactional(readOnly = true)

@@ -2,9 +2,11 @@ package org.ktc2.cokaen.wouldyouin.reservation.api.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.ktc2.cokaen.wouldyouin.event.persist.Event;
 import org.ktc2.cokaen.wouldyouin.member.persist.Member;
@@ -13,6 +15,8 @@ import org.ktc2.cokaen.wouldyouin.reservation.persist.Reservation;
 @Getter
 @Builder(toBuilder = true)
 @EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
 public class ReservationRequest {
 

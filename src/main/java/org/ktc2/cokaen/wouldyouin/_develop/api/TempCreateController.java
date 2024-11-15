@@ -63,8 +63,8 @@ public class TempCreateController {
 
     // 테스트: 사용자 삭제
     @DeleteMapping("/delete/{memberId}")
-    public ResponseEntity<ApiResponseBody<Void>> testDeleteMember(@PathVariable("memberId") Long id) {
-        baseMemberService.deleteById(id);
+    public ResponseEntity<ApiResponseBody<Void>> testDeleteMember(@PathVariable("memberId") Long id, @RequestParam("type") MemberType memberType) {
+        baseMemberService.deleteByMemberIdentifier(new MemberIdentifier(id, memberType));
         return ApiResponse.noContent();
     }
 

@@ -27,26 +27,6 @@ public class MemberData {
     public static class R {
 
         public static class normal1 {
-
-            public static class _Relation {
-
-                public static List<CuratorLike> curatorLikes() {
-                    return null; // TODO: Implement
-                }
-
-                public static List<HostLike> hostLikes() {
-                    return null; // TODO: Implement
-                }
-
-                public static List<Reservation> reservations() {
-                    return null; // TODO: Implement
-                }
-
-                public static List<Review> reviews() {
-                    return null; // TODO: Implement
-                }
-            }
-
             public static final long id = 101L;
             public static final MemberIdentifier memberIdentifier = new MemberIdentifier(id, MemberType.normal);
             public static final AccountType accountType = AccountType.kakao;
@@ -63,14 +43,6 @@ public class MemberData {
         }
 
         public static class curator1 {
-
-            public static class _Relation {
-
-                public static List<Curation> curations() {
-                    return null; // TODO: Implement
-                }
-            }
-
             public static final long id = 201L;
             public static final MemberIdentifier memberIdentifier = new MemberIdentifier(id, MemberType.curator);
             public static final AccountType accountType = AccountType.google;
@@ -89,14 +61,6 @@ public class MemberData {
         }
 
         public static class host1 {
-
-            public static class _Relation {
-
-                public static List<Event> events() {
-                    return null; // TODO: Implement
-                }
-            }
-
             public static final long id = 301;
             public static final MemberIdentifier memberIdentifier = new MemberIdentifier(id, MemberType.host);
             public static final String email = "host1@example.com";

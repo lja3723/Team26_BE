@@ -29,7 +29,7 @@ import org.ktc2.cokaen.wouldyouin._global.testdata.MemberData.R.curator1;
 import org.ktc2.cokaen.wouldyouin.auth.application.JwtAuthFilter;
 import org.ktc2.cokaen.wouldyouin.image.api.ImageController;
 import org.ktc2.cokaen.wouldyouin.image.api.ImageDomain;
-import org.ktc2.cokaen.wouldyouin.image.application.CurationImageService;
+import org.ktc2.cokaen.wouldyouin.image.application.CurationCardImageService;
 import org.ktc2.cokaen.wouldyouin.image.application.ImageServiceFactory;
 import org.ktc2.cokaen.wouldyouin.image.application.ImageStorageService;
 import org.ktc2.cokaen.wouldyouin.payment.application.PaymentService;
@@ -53,7 +53,7 @@ class ImageControllerUnitTest {
     @MockBean
     private ImageServiceFactory imageServiceFactory;
     @MockBean
-    private CurationImageService curationImageService;
+    private CurationCardImageService curationCardImageService;
     @MockBean
     private ImageStorageService imageStorageService;
     @MockBean
@@ -112,9 +112,9 @@ class ImageControllerUnitTest {
         // given
         MockMultipartFile image1 = mockMultipartFile1.get();
         MockMultipartFile image2 = mockMultipartFile2.get();
-        given((CurationImageService) imageServiceFactory.getImageService(
-            ImageDomain.CURATION)).willReturn(curationImageService);
-        given(curationImageService.saveImages(List.of(image1, image2)))
+        given((CurationCardImageService) imageServiceFactory.getImageService(
+            ImageDomain.CURATION)).willReturn(curationCardImageService);
+        given(curationCardImageService.saveImages(List.of(image1, image2)))
             .willReturn(
                 List.of(ImageData.curation1.response.get(), ImageData.curation2.response.get()));
 
@@ -130,7 +130,7 @@ class ImageControllerUnitTest {
 
         // then
         then(imageServiceFactory).should(times(1)).getImageService(eq(ImageDomain.CURATION));
-        then(curationImageService).should(times(1)).saveImages(List.of(image1, image2));
+        then(curationCardImageService).should(times(1)).saveImages(List.of(image1, image2));
     }
 
     @Test
@@ -154,7 +154,7 @@ class ImageControllerUnitTest {
 
         // then
         then(imageServiceFactory).shouldHaveNoInteractions();
-        then(curationImageService).shouldHaveNoInteractions();
+        then(curationCardImageService).shouldHaveNoInteractions();
     }
 
     @Test
@@ -162,8 +162,8 @@ class ImageControllerUnitTest {
     @WithMockCurator1
     void deleteImage1() throws Exception {
         // given
-        given((CurationImageService) imageServiceFactory.getImageService(
-            ImageDomain.CURATION)).willReturn(curationImageService);
+        given((CurationCardImageService) imageServiceFactory.getImageService(
+            ImageDomain.CURATION)).willReturn(curationCardImageService);
 
         // when
         mockMvc.perform(delete("/api/images/" + randomId)
@@ -174,7 +174,7 @@ class ImageControllerUnitTest {
 
         // then
         then(imageServiceFactory).should(times(1)).getImageService(eq(ImageDomain.CURATION));
-        then(curationImageService).should(times(1))
+        then(curationCardImageService).should(times(1))
             .deleteImage(curator1.memberIdentifier, randomId);
     }
 
@@ -183,8 +183,8 @@ class ImageControllerUnitTest {
     @WithMockCurator1
     void deleteImage2() throws Exception {
         // given
-        given((CurationImageService) imageServiceFactory.getImageService(
-            ImageDomain.CURATION)).willReturn(curationImageService);
+        given((CurationCardImageService) imageServiceFactory.getImageService(
+            ImageDomain.CURATION)).willReturn(curationCardImageService);
 
         // when
         mockMvc.perform(delete("/api/images/" + randomId)
@@ -196,6 +196,6 @@ class ImageControllerUnitTest {
 
         // then
         then(imageServiceFactory).shouldHaveNoInteractions();
-        then(curationImageService).shouldHaveNoInteractions();
+        then(curationCardImageService).shouldHaveNoInteractions();
     }
 }

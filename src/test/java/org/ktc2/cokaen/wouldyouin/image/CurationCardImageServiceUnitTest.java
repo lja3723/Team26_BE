@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
 
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.ktc2.cokaen.wouldyouin._global.testdata.CurationData.R.curation1;
 import org.ktc2.cokaen.wouldyouin._global.testdata.ImageData;
-import org.ktc2.cokaen.wouldyouin.image.application.CurationImageService;
+import org.ktc2.cokaen.wouldyouin.image.application.CurationCardImageService;
 import org.ktc2.cokaen.wouldyouin.image.application.ImageStorageService;
 import org.ktc2.cokaen.wouldyouin.image.persist.CurationCardImage;
 import org.ktc2.cokaen.wouldyouin.image.persist.CurationCardImageRepository;
@@ -23,7 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class CurationCardImageServiceUnitTest {
 
-    private CurationImageService curationImageService;
+    private CurationCardImageService curationCardImageService;
 
     @Mock
     private ImageStorageService imageStorageService;
@@ -33,7 +35,7 @@ public class CurationCardImageServiceUnitTest {
 
     @BeforeEach
     void setUp() {
-        curationImageService = new CurationImageService(imageStorageService,
+        curationCardImageService = new CurationCardImageService(imageStorageService,
             curationCardImageRepository);
     }
 
@@ -44,7 +46,7 @@ public class CurationCardImageServiceUnitTest {
         given(curationCardImageRepository.findById(curation1.id)).willReturn(Optional.of(ImageData.curation1.entity.get()));
 
         // when
-        CurationCardImage response = curationImageService.getById(curation1.id);
+        CurationCardImage response = curationCardImageService.getById(curation1.id);
 
         // then
         assertThat(response).isEqualTo(ImageData.curation1.entity.get());

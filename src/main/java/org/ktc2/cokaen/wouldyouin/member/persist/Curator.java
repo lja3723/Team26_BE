@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,7 +25,6 @@ import org.ktc2.cokaen.wouldyouin.member.api.dto.request.edit.CuratorEditRequest
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DiscriminatorValue("Curator")
-@EqualsAndHashCode(callSuper = true)
 @ToString
 @Entity
 public class Curator extends Member implements LikeableMember {
@@ -58,6 +56,7 @@ public class Curator extends Member implements LikeableMember {
         Optional.ofNullable(request.getNickname()).ifPresent(this::setNickname);
         Optional.ofNullable(request.getArea()).ifPresent(this::setArea);
         Optional.ofNullable(request.getIntro()).ifPresent(this::setIntro);
+        Optional.ofNullable(request.getHashtags()).ifPresent(this::setHashtags);
         Optional.ofNullable(image).ifPresent(this::setProfileImage);
         Optional.ofNullable(profileImageThumbnailUrl).ifPresent(this::setProfileImageThumbnailUrl);
     }

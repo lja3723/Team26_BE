@@ -12,7 +12,6 @@ import org.ktc2.cokaen.wouldyouin.reservation.persist.Reservation;
 @Builder
 @Getter
 @EqualsAndHashCode
-@ToString
 public class ReservationResponse {
 
     private Long id;

@@ -17,7 +17,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.ktc2.cokaen.wouldyouin.advertisement.api.dto.AdvertisementRequest;
 import org.ktc2.cokaen.wouldyouin.image.persist.AdvertisementImage;
 
@@ -26,7 +25,6 @@ import org.ktc2.cokaen.wouldyouin.image.persist.AdvertisementImage;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @EqualsAndHashCode
-@ToString
 public class Advertisement {
 
     @Id

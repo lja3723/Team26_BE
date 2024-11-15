@@ -1,8 +1,8 @@
 package org.ktc2.cokaen.wouldyouin.reservation.application;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.ktc2.cokaen.wouldyouin._common.exception.EntityNotFoundException;
-import org.ktc2.cokaen.wouldyouin.reservation.exception.ReservationNotFoundForReviewException;
 import org.ktc2.cokaen.wouldyouin._common.exception.UnauthorizedException;
 import org.ktc2.cokaen.wouldyouin.auth.MemberIdentifier;
 import org.ktc2.cokaen.wouldyouin.event.application.EventService;
@@ -14,8 +14,11 @@ import org.ktc2.cokaen.wouldyouin.reservation.api.dto.KakaoPayReservationRespons
 import org.ktc2.cokaen.wouldyouin.reservation.api.dto.ReservationRequest;
 import org.ktc2.cokaen.wouldyouin.reservation.api.dto.ReservationResponse;
 import org.ktc2.cokaen.wouldyouin.reservation.api.dto.ReservationSliceResponse;
+import org.ktc2.cokaen.wouldyouin.reservation.exception.ReservationNotFoundForReviewException;
 import org.ktc2.cokaen.wouldyouin.reservation.persist.Reservation;
 import org.ktc2.cokaen.wouldyouin.reservation.persist.ReservationRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
@@ -44,31 +48,38 @@ public class ReservationService {
     }
 
     @Transactional(readOnly = true)
-    public ReservationSliceResponse getAllByEventId(MemberIdentifier identifier, Long eventId, Pageable pageable, Long oldLastId) {
+    public ReservationSliceResponse getAllByEventId(
+        MemberIdentifier identifier, Long eventId, Pageable pageable, Long oldLastId) {
         eventService.validateHostId(identifier, eventService.getByIdOrThrow(eventId));
-        Slice<Reservation> reservations = reservationRepository.findByEventIdOrderByReservationIdDesc(eventId, oldLastId, pageable);
+        Slice<Reservation> reservations = reservationRepository.findByEventIdOrderByReservationIdDesc(
+            eventId, oldLastId, pageable);
         Long newLastId = getLastId(reservations, oldLastId);
         return ReservationSliceResponse.from(reservations, reservations.getSize(), newLastId);
     }
 
     @Transactional
-    public KakaoPayReservationResponse create(MemberIdentifier identifier, ReservationRequest reservationRequest) {
+    public KakaoPayReservationResponse create(
+        MemberIdentifier identifier, ReservationRequest reservationRequest) {
         Reservation reservation = reservationRepository.save(reservationRequest.toEntity(
             memberService.getByIdOrThrow(identifier.id()),
             eventService.getByIdOrThrow(reservationRequest.getEventId()))
         );
-        eventService.decreaseLeftSeat(reservation.getEvent().getId(), reservationRequest.getQuantity());
-        KakaoPayResponse kakaoPayResponse =  paymentService.createPayment(KakaoPayRequest.from(reservation));
+        eventService.decreaseLeftSeat(reservation.getEvent().getId(),
+            reservationRequest.getQuantity());
+        KakaoPayResponse kakaoPayResponse = paymentService.createPayment(
+            KakaoPayRequest.from(reservation));
         ReservationResponse reservationResponse = ReservationResponse.from(reservation);
         return KakaoPayReservationResponse.from(reservationResponse, kakaoPayResponse);
     }
 
     @Transactional
-    public ReservationResponse createTest(MemberIdentifier identifier, ReservationRequest reservationRequest) {
+    public ReservationResponse createTest(
+        MemberIdentifier identifier, ReservationRequest reservationRequest) {
         Reservation reservation = reservationRepository.save(reservationRequest.toEntity(
             memberService.getByIdOrThrow(identifier.id()),
             eventService.getByIdOrThrow(reservationRequest.getEventId())));
-        eventService.decreaseLeftSeat(reservation.getEvent().getId(), reservationRequest.getQuantity());
+        eventService.decreaseLeftSeat(reservation.getEvent().getId(),
+            reservationRequest.getQuantity());
         return ReservationResponse.from(reservation);
     }
 

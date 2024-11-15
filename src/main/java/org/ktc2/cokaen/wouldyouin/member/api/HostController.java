@@ -24,7 +24,7 @@ public class HostController {
 
     @PutMapping
     public ResponseEntity<ApiResponseBody<MemberResponse>> updateHost(@Authorize(MemberType.host) MemberIdentifier identifier, @RequestBody HostEditRequest request) {
-        return ApiResponse.ok(hostService.updateHost(identifier.id(), request));
+        return ApiResponse.ok(hostService.updateHost(identifier, request));
     }
 
 }

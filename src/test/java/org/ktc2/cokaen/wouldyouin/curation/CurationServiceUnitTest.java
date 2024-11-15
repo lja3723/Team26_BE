@@ -30,7 +30,7 @@ import org.ktc2.cokaen.wouldyouin.curation.application.CurationService;
 import org.ktc2.cokaen.wouldyouin.curation.persist.Curation;
 import org.ktc2.cokaen.wouldyouin.curation.persist.CurationRepository;
 import org.ktc2.cokaen.wouldyouin.event.application.EventService;
-import org.ktc2.cokaen.wouldyouin.image.application.CurationImageService;
+import org.ktc2.cokaen.wouldyouin.image.application.CurationCardImageService;
 import org.ktc2.cokaen.wouldyouin.member.application.CuratorService;
 import org.ktc2.cokaen.wouldyouin.member.persist.MemberType;
 import org.mockito.Mock;
@@ -54,11 +54,12 @@ class CurationServiceUnitTest {
     private CurationCardService curationCardService;
 
     @Mock
-    private CurationImageService curationImageService;
+    private CurationCardImageService curationCardImageService;
 
     @BeforeEach
     void setUp() {
-        curationService = new CurationService(curationRepository, curatorService, eventService, curationCardService, curationImageService);
+        curationService = new CurationService(curationRepository, curatorService, eventService, curationCardService,
+            curationCardImageService);
     }
 
     @Test
@@ -66,7 +67,7 @@ class CurationServiceUnitTest {
     void getById() {
         // given
         given(curationRepository.findById(curation1.id)).willReturn(Optional.of(CurationData.curation1.entity.get()));
-        given(curationImageService.getImageUrl(ImageData.curation1.entity.get())).willReturn(ImageData.R.curation1.url);
+        given(curationCardImageService.getImageUrl(ImageData.curation1.entity.get())).willReturn(ImageData.R.curation1.url);
 
         // when
         CurationResponse response = curationService.getById(curation1.id);
@@ -81,7 +82,7 @@ class CurationServiceUnitTest {
         // given
         given(curationRepository.findAllByAreaOrderByCreatedDateDesc(curation1.area, curation1.lastId, curation1.pageable))
             .willReturn(CurationData.CurationSlice.get());
-        given(curationImageService.getImageUrl(ImageData.curation1.entity.get())).willReturn(ImageData.R.curation1.url);
+        given(curationCardImageService.getImageUrl(ImageData.curation1.entity.get())).willReturn(ImageData.R.curation1.url);
 
         // when
         CurationSliceResponse response =
@@ -97,7 +98,7 @@ class CurationServiceUnitTest {
         // given
         given(curationRepository.findAllByCuratorOrderByCreatedDateDesc(curator1.id, curation1.lastId, curation1.pageable))
             .willReturn(CurationData.CurationSlice.get());
-        given(curationImageService.getImageUrl(ImageData.curation1.entity.get())).willReturn(ImageData.R.curation1.url);
+        given(curationCardImageService.getImageUrl(ImageData.curation1.entity.get())).willReturn(ImageData.R.curation1.url);
 
         // when
         CurationSliceResponse response =
@@ -116,7 +117,7 @@ class CurationServiceUnitTest {
             .willReturn(CurationData.curationCard1.entity.get());
         given(eventService.getByIdOrThrow(curation1.eventIds.getFirst())).willReturn(EventData.event1.entity.get());
         given(curationRepository.save(any(Curation.class))).willReturn(CurationData.curation1.entity.get());
-        given(curationImageService.getImageUrl(ImageData.curation1.entity.get())).willReturn(ImageData.R.curation1.url);
+        given(curationCardImageService.getImageUrl(ImageData.curation1.entity.get())).willReturn(ImageData.R.curation1.url);
 
         // when
         CurationResponse response = curationService.create(curator1.memberIdentifier, CurationData.curation1.request.create.get());
@@ -133,8 +134,8 @@ class CurationServiceUnitTest {
         given(curationCardService.create(CurationData.curationCard2.request.get()))
             .willReturn(CurationData.curationCard2.entity.get());
         given(eventService.getByIdOrThrow(event2.id)).willReturn(EventData.event1.entity.get());
-        given(curationImageService.getImageUrl(ImageData.curation2.entity.get())).willReturn(curation2.url);
-        given(curationImageService.createThumbnail(curation2.name)).willReturn(curation2.url);
+        given(curationCardImageService.getImageUrl(ImageData.curation2.entity.get())).willReturn(curation2.url);
+        given(curationCardImageService.createThumbnail(curation2.name)).willReturn(curation2.url);
 
         // when
         CurationResponse response = curationService.update(curator1.memberIdentifier, curation1.id,
@@ -166,8 +167,8 @@ class CurationServiceUnitTest {
         given(curationCardService.create(CurationData.curationCard2.request.get()))
             .willReturn(CurationData.curationCard2.entity.get());
         given(eventService.getByIdOrThrow(event2.id)).willReturn(EventData.event1.entity.get());
-        given(curationImageService.getImageUrl(ImageData.curation2.entity.get())).willReturn(curation2.url);
-        given(curationImageService.createThumbnail(curation2.name)).willReturn(curation2.url);
+        given(curationCardImageService.getImageUrl(ImageData.curation2.entity.get())).willReturn(curation2.url);
+        given(curationCardImageService.createThumbnail(curation2.name)).willReturn(curation2.url);
 
         // when
         CurationResponse response = curationService.update(new MemberIdentifier(invalidCuratorId, MemberType.admin), curation1.id,

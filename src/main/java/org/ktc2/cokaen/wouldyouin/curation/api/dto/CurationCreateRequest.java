@@ -7,9 +7,12 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import org.ktc2.cokaen.wouldyouin._common.vo.Area;
 import org.ktc2.cokaen.wouldyouin.curation.persist.Curation;
@@ -18,8 +21,11 @@ import org.ktc2.cokaen.wouldyouin.event.persist.Event;
 import org.ktc2.cokaen.wouldyouin.member.persist.Curator;
 
 @Getter
+@Setter
 @Builder(toBuilder = true)
 @EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
 public class CurationCreateRequest {
 
@@ -42,7 +48,8 @@ public class CurationCreateRequest {
 
     @AssertTrue(message = "큐레이션 카드의 개수는 1개 이상 10개 이하이어야 합니다.")
     private boolean isCurationCardsSizeValid() {
-        return curationCards != null && 1 <= this.curationCards.size() && this.curationCards.size() <= 10;
+        return curationCards != null && 1 <= this.curationCards.size()
+            && this.curationCards.size() <= 10;
     }
 
     public Curation toEntity(Curator curator, List<CurationCard> curationCards,

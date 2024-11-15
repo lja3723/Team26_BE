@@ -1,14 +1,16 @@
 package org.ktc2.cokaen.wouldyouin.payment.application;
 
 import lombok.RequiredArgsConstructor;
-import org.ktc2.cokaen.wouldyouin.payment.exception.FailedToPayException;
 import org.ktc2.cokaen.wouldyouin._common.util.KakaoPayUtil;
 import org.ktc2.cokaen.wouldyouin._common.util.RestClientUtil;
 import org.ktc2.cokaen.wouldyouin._common.util.UriUtil;
 import org.ktc2.cokaen.wouldyouin.payment.dto.KakaoPayRequest;
 import org.ktc2.cokaen.wouldyouin.payment.dto.KakaoPayResponse;
+import org.ktc2.cokaen.wouldyouin.payment.exception.FailedToPayException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 
 @Service
 @RequiredArgsConstructor
@@ -30,12 +32,22 @@ public class PaymentService {
     private String secretKey;
 
     public KakaoPayResponse createPayment(KakaoPayRequest kakaoPayRequest) {
-        return client.post(
-            KakaoPayResponse.class,
-            UriUtil.assembleFullUrl(kakaoPayRequestHost, kakaoPaySinglePaymentUrl),
-            KakaoPayUtil.createKakaoPayRequestHeaders(kakaoPayRequestHost, secretKey),
-            KakaoPayUtil.createKakaoPayRequestBody(kakaoPayRequest, approvalUrl, cancelUrl, failUrl),
-            (req, rsp) -> { throw new FailedToPayException("카카오페이 API 요청을 실패하였습니다."); }
-        );
+        return RestClient.builder().build().post().uri(UriUtil.assembleFullUrl(kakaoPayRequestHost, kakaoPaySinglePaymentUrl))
+            .header("Host", "open-api.kakaopay.com")
+            .header("Authorization", "SECRET_KEY " + secretKey)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(KakaoPayUtil.createKakaoPayRequestBody(kakaoPayRequest, approvalUrl, cancelUrl, failUrl))
+            .retrieve()
+            .body(KakaoPayResponse.class);
+//        return client.post(
+//            KakaoPayResponse.class,
+//            UriUtil.assembleFullUrl(kakaoPayRequestHost, kakaoPaySinglePaymentUrl),
+//            KakaoPayUtil.createKakaoPayRequestHeaders(kakaoPayRequestHost, secretKey),
+//            KakaoPayUtil.createKakaoPayRequestBody(kakaoPayRequest, approvalUrl, cancelUrl,
+//                failUrl),
+//            (req, rsp) -> {
+//                throw new FailedToPayException("카카오페이 API 요청을 실패하였습니다.");
+//            }
+//        );
     }
 }

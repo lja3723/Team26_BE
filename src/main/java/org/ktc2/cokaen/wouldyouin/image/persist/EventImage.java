@@ -16,7 +16,6 @@ import org.ktc2.cokaen.wouldyouin.event.persist.Event;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
-@ToString
 @NoArgsConstructor
 public class EventImage extends Image {
 

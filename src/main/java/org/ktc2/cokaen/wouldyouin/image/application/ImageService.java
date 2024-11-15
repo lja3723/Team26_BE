@@ -32,12 +32,13 @@ public abstract class ImageService<T extends Image> {
 
     protected abstract T mapToEntityFrom(ImageRequest imageRequest);
 
-    protected abstract void validateMemberId(MemberIdentifier identifier, T image);
+    public abstract void validateMemberId(MemberIdentifier identifier, T image);
 
     @Transactional(readOnly = true)
     public T getById(Long id) {
         return getImageRepository().findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(getImageDomain().name() + " 이미지를 찾을 수 없습니다."));
+            .orElseThrow(
+                () -> new EntityNotFoundException(getImageDomain().name() + " 이미지를 찾을 수 없습니다."));
     }
 
     @Transactional
@@ -53,6 +54,7 @@ public abstract class ImageService<T extends Image> {
         validateMemberId(identifier, image);
         delete(imageId);
         imageStorageService.delete(getChildPath(), image.getName());
+        getImageRepository().flush();
     }
 
     protected ImageResponse create(ImageRequest imageRequest) {
@@ -63,6 +65,13 @@ public abstract class ImageService<T extends Image> {
     protected void delete(Long id) {
         getById(id);
         getImageRepository().deleteById(id);
+    }
+
+    @Transactional
+    public List<ImageResponse> saveImagesWithThumbnail(List<MultipartFile> images) {
+        return images.stream()
+            .map(image -> create(imageStorageService.saveToDirectoryWithThumbnail(image, getChildPath())))
+            .toList();
     }
 
     public String createThumbnail(String fileName) {

@@ -10,7 +10,7 @@ public class KakaoPayUtil {
 
     public static HttpHeaders createKakaoPayRequestHeaders(String kakaoPayRequestHost, String secretKey) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Host", kakaoPayRequestHost);
+        headers.add("Host", "open-api.kakaopay.com");
         headers.add("Authorization", "SECRET_KEY " + secretKey);
         headers.setContentType(MediaType.APPLICATION_JSON);
         return headers;

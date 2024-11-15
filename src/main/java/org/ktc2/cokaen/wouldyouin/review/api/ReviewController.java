@@ -59,7 +59,7 @@ public class ReviewController {
         return ApiResponse.ok(reviewService.getById(reviewId));
     }
 
-    @GetMapping("events")
+    @GetMapping("/events")
     public ResponseEntity<ApiResponseBody<ReviewEventSliceResponse>> getUnreviewedEventsByMemberId(
         @Authorize({MemberType.normal, MemberType.curator}) MemberIdentifier identifier,
         @RequestParam(defaultValue = ParamDefaults.PAGE) Integer page,

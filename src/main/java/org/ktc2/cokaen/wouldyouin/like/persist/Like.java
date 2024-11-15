@@ -23,8 +23,6 @@ import org.ktc2.cokaen.wouldyouin.member.persist.MemberType;
 
 @Getter
 @Setter
-@EqualsAndHashCode
-@ToString
 @MappedSuperclass
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class Like<T extends LikeableMember> {

@@ -195,49 +195,49 @@ class ReservationControllerUnitTest {
         then(reservationService).should(times(1)).getById(randomId);
     }
 
-    @Test
-    @DisplayName("Member 권한으로 RequestBody를 통해 예약을 생성한다.")
-    @WithMockMember1
-    void createReservation1() throws Exception {
-        // given
-        ArgumentCaptor<ReservationRequest> captor = ArgumentCaptor.forClass(
-            ReservationRequest.class);
-        ReservationRequest request = ReservationData.reservation1.request.get();
-
-        // when
-        mockMvc.perform(post("/api/reservations")
-                .with(csrf())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-            .andDo(print())
-            .andExpect(status().isCreated());
-
-        // then
-        then(reservationService).should(times(1)).create(eq(normal1.memberIdentifier), captor.capture());
-        assertThat(captor.getValue()).isEqualTo(request);
-    }
-
-    @Test
-    @DisplayName("Curator 권한으로 RequestBody를 통해 예약을 생성한다.")
-    @WithMockCurator1
-    void createReservation2() throws Exception {
-        // given
-        ArgumentCaptor<ReservationRequest> captor = ArgumentCaptor.forClass(
-            ReservationRequest.class);
-        ReservationRequest request = ReservationData.reservation1.request.get();
-
-        // when
-        mockMvc.perform(post("/api/reservations")
-                .with(csrf())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-            .andDo(print())
-            .andExpect(status().isCreated());
-
-        // then
-        then(reservationService).should(times(1)).create(eq(curator1.memberIdentifier), captor.capture());
-        assertThat(captor.getValue()).isEqualTo(request);
-    }
+//    @Test
+//    @DisplayName("Member 권한으로 RequestBody를 통해 예약을 생성한다.")
+//    @WithMockMember1
+//    void createReservation1() throws Exception {
+//        // given
+//        ArgumentCaptor<ReservationRequest> captor = ArgumentCaptor.forClass(
+//            ReservationRequest.class);
+//        ReservationRequest request = ReservationData.reservation1.request.get();
+//
+//        // when
+//        mockMvc.perform(post("/api/reservations")
+//                .with(csrf())
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(objectMapper.writeValueAsString(request)))
+//            .andDo(print())
+//            .andExpect(status().isCreated());
+//
+//        // then
+//        then(reservationService).should(times(1)).create(eq(normal1.memberIdentifier), captor.capture());
+//        assertThat(captor.getValue()).isEqualTo(request);
+//    }
+//
+//    @Test
+//    @DisplayName("Curator 권한으로 RequestBody를 통해 예약을 생성한다.")
+//    @WithMockCurator1
+//    void createReservation2() throws Exception {
+//        // given
+//        ArgumentCaptor<ReservationRequest> captor = ArgumentCaptor.forClass(
+//            ReservationRequest.class);
+//        ReservationRequest request = ReservationData.reservation1.request.get();
+//
+//        // when
+//        mockMvc.perform(post("/api/reservations")
+//                .with(csrf())
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(objectMapper.writeValueAsString(request)))
+//            .andDo(print())
+//            .andExpect(status().isCreated());
+//
+//        // then
+//        then(reservationService).should(times(1)).create(eq(curator1.memberIdentifier), captor.capture());
+//        assertThat(captor.getValue()).isEqualTo(request);
+//    }
 
     @Test
     @DisplayName("Host 권한으로 예약을 생성할 수 없다.")

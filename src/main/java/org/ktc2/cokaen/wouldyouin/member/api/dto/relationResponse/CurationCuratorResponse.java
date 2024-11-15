@@ -29,7 +29,7 @@ public class CurationCuratorResponse {
                 .nickname(curator.getNickname())
                 .email(curator.getEmail())
                 .phone(curator.getPhone())
-                .profileImageUrl(curator.getProfileImageUrl())
+                .profileImageUrl(curator.getProfileImageThumbnailUrl())
                 .intro(curator.getIntro())
                 .likes(curator.getLikes())
                 .hashtags(curator.getHashtags())

@@ -20,7 +20,7 @@ import org.ktc2.cokaen.wouldyouin.curation.api.dto.CurationCardResponse;
 import org.ktc2.cokaen.wouldyouin.curation.application.CurationCardService;
 import org.ktc2.cokaen.wouldyouin.curation.persist.CurationCard;
 import org.ktc2.cokaen.wouldyouin.curation.persist.CurationCardRepository;
-import org.ktc2.cokaen.wouldyouin.image.application.CurationImageService;
+import org.ktc2.cokaen.wouldyouin.image.application.CurationCardImageService;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -33,11 +33,11 @@ public class CurationCardServiceUnitTest {
     private CurationCardRepository curationCardRepository;
 
     @Mock
-    private CurationImageService curationImageService;
+    private CurationCardImageService curationCardImageService;
 
     @BeforeEach
     void setUp() {
-        curationCardService = new CurationCardService(curationCardRepository, curationImageService);
+        curationCardService = new CurationCardService(curationCardRepository, curationCardImageService);
     }
 
     @Test
@@ -45,7 +45,7 @@ public class CurationCardServiceUnitTest {
     void getById() {
         // given
         given(curationCardRepository.findById(curationCard1.id)).willReturn(Optional.of(CurationData.curationCard1.entity.get()));
-        given(curationImageService.getImageUrl(ImageData.curation1.entity.get())).willReturn(ImageData.R.curation1.url);
+        given(curationCardImageService.getImageUrl(ImageData.curation1.entity.get())).willReturn(ImageData.R.curation1.url);
 
         // when
         CurationCardResponse response = curationCardService.getById(curationCard1.id);
@@ -58,7 +58,7 @@ public class CurationCardServiceUnitTest {
     @DisplayName("큐레이션 카드 DTO를 통해 큐레이션 카드를 생성한다.")
     void create() {
         // given
-        given(curationImageService.getById(curation1.id)).willReturn(ImageData.curation1.entity.get());
+        given(curationCardImageService.getById(curation1.id)).willReturn(ImageData.curation1.entity.get());
         given(curationCardRepository.save(CurationData.curationCard1.entityWithNoId.get()))
             .willReturn(CurationData.curationCard1.entity.get());
 
@@ -79,7 +79,7 @@ public class CurationCardServiceUnitTest {
         curationCardService.delete(curator1.memberIdentifier, curationCard1.id);
 
         // then
-        then(curationImageService).should(times(curationCard1.images.size())).deleteImage(any(), any());
+        then(curationCardImageService).should(times(curationCard1.images.size())).deleteImage(any(), any());
         then(curationCardRepository).should(times(1)).deleteById(curationCard1.id);
     }
 }

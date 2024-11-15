@@ -25,7 +25,6 @@ import org.ktc2.cokaen.wouldyouin.review.api.dto.ReviewEditRequest;
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Review {

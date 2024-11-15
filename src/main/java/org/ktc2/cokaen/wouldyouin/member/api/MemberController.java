@@ -30,19 +30,19 @@ public class MemberController {
     // 사용자 수정
     @PutMapping
     public ResponseEntity<ApiResponseBody<MemberResponse>> updateMember(@Authorize(MemberType.normal) MemberIdentifier identifier, @RequestBody MemberEditRequest editRequest) {
-        return ApiResponse.ok(memberService.updateMember(identifier.id(), editRequest));
+        return ApiResponse.ok(memberService.updateMember(identifier, editRequest));
     }
 
     // 사용자 조회
     @GetMapping("{memberId}")
     public ResponseEntity<ApiResponseBody<MemberResponse>> findMember(@PathVariable("memberId") Long memberId) {
-        return ApiResponse.ok(baseMemberService.findById(memberId));
+        return ApiResponse.ok(baseMemberService.findByMemberIdentifier(memberId));
     }
 
     // 사용자 삭제
     @DeleteMapping
     public ResponseEntity<ApiResponseBody<Void>> deleteMember(@Authorize({MemberType.normal, MemberType.host, MemberType.curator}) MemberIdentifier identifier) {
-        baseMemberService.deleteById(identifier.id());
+        baseMemberService.deleteByMemberIdentifier(identifier);
         return ApiResponse.noContent();
     }
 }

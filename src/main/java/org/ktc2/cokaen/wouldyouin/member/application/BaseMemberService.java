@@ -2,6 +2,7 @@ package org.ktc2.cokaen.wouldyouin.member.application;
 
 import lombok.RequiredArgsConstructor;
 import org.ktc2.cokaen.wouldyouin._common.exception.EntityNotFoundException;
+import org.ktc2.cokaen.wouldyouin.auth.MemberIdentifier;
 import org.ktc2.cokaen.wouldyouin.member.api.dto.MemberResponse;
 import org.ktc2.cokaen.wouldyouin.member.exception.EmailAlreadyExistsException;
 import org.ktc2.cokaen.wouldyouin.member.persist.BaseMember;
@@ -29,7 +30,7 @@ public class BaseMemberService {
     }
 
     @Transactional(readOnly = true)
-    public MemberResponse findById(Long id) {
+    public MemberResponse findByMemberIdentifier(Long id) {
         return derivedMemberServiceFactory.get(getMemberTypeByIdOrThrow(id)).getMemberResponseById(id);
     }
 
@@ -41,9 +42,9 @@ public class BaseMemberService {
     }
 
     @Transactional
-    public void deleteById(Long id) {
-        derivedMemberServiceFactory.get(getMemberTypeByIdOrThrow(id)).deleteById(id);
-        baseMemberRepository.deleteById(id);
+    public void deleteByMemberIdentifier(MemberIdentifier identifier) {
+        derivedMemberServiceFactory.get(getMemberTypeByIdOrThrow(identifier.id())).deleteByMemberIdentifier(identifier);
+        baseMemberRepository.deleteById(identifier.id());
     }
 
     @Transactional(readOnly = true)

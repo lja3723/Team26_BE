@@ -20,9 +20,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
         + "ORDER BY R.id DESC")
     Slice<Review> findByEventIdOrderByReviewIdDesc(Long eventId, Long lastId, Pageable pageable);
 
-    @Query("select r, e from Review r Join fetch r.event e "
-        + "where r.member.id = :memberId "
-        + "And e.id < :lastId "
-        + "And e.id not in (select rv.event.id from Review rv where rv.member.id = :memberId) ")
+    @Query("select e from Event e WHERE e.id < :lastId "
+        + "And e.id NOT IN (SELECT r.event.id FROM Review r WHERE r.member.id = :memberId)")
     Slice<Event> findUnreviewedEventsByMemberId(Long memberId, Long lastId, Pageable pageable);
 }

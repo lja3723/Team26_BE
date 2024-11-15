@@ -50,6 +50,3 @@ public class LikeController {
                 .toggleLike(identifier, targetId));
     }
 }
-
-// TODO: Like service에 Identifier 넘겨주기
-// TODO: Review service에 Identifier 넘겨주기

@@ -1,9 +1,12 @@
 package org.ktc2.cokaen.wouldyouin.member.api.dto.request.create;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import org.ktc2.cokaen.wouldyouin._common.vo.Area;
 import org.ktc2.cokaen.wouldyouin.image.persist.MemberImage;
@@ -12,9 +15,11 @@ import org.ktc2.cokaen.wouldyouin.member.persist.Gender;
 import org.ktc2.cokaen.wouldyouin.member.persist.Member;
 
 @Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 @ToString
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class MemberCreateRequest extends MemberCreateRequestBase {
 
     protected AccountType accountType;

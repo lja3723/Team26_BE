@@ -7,6 +7,7 @@ import org.ktc2.cokaen.wouldyouin.auth.Authorize;
 import org.ktc2.cokaen.wouldyouin.auth.MemberIdentifier;
 import org.ktc2.cokaen.wouldyouin.auth.api.dto.LocalLoginRequest;
 import org.ktc2.cokaen.wouldyouin.auth.api.dto.LocalSignupRequest;
+import org.ktc2.cokaen.wouldyouin.auth.api.dto.SocialLoginRequest;
 import org.ktc2.cokaen.wouldyouin.auth.api.dto.SocialTokenResponse;
 import org.ktc2.cokaen.wouldyouin.auth.api.dto.TokenResponse;
 import org.ktc2.cokaen.wouldyouin.auth.application.AuthService;
@@ -41,10 +42,10 @@ public class AuthController {
         return ApiResponse.ok(authService.localLogin(request));
     }
 
-    // 소셜 로그인 redirect 처리 (회원가입 및 로그인)
-    @GetMapping("/social/redirect/{accountType}")
-    public ResponseEntity<ApiResponseBody<SocialTokenResponse>> processRedirect(@PathVariable("accountType") AccountType accountType, @RequestParam("code") String code) {
-        return ApiResponse.ok(authService.socialLogin(accountType, code));
+    // 소셜 로그인
+    @PostMapping("/social/login")
+    public ResponseEntity<ApiResponseBody<SocialTokenResponse>> processSocialLogin(@RequestBody SocialLoginRequest request) {
+        return ApiResponse.ok(authService.socialLogin(request));
     }
 
     // 소셜 로그인 추가정보 입력 API

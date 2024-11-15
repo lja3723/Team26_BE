@@ -1,11 +1,13 @@
 package org.ktc2.cokaen.wouldyouin.curation.api.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import org.ktc2.cokaen.wouldyouin._common.config.QuoteAsStringSerializer;
 import org.ktc2.cokaen.wouldyouin._common.vo.Area;
 import org.ktc2.cokaen.wouldyouin.curation.persist.Curation;
 import org.ktc2.cokaen.wouldyouin.event.api.dto.relationResonse.CurationEventResponse;
@@ -29,7 +31,8 @@ public class CurationResponse {
     private final LocalDateTime createdTime;
     private final LocalDateTime modifiedDate;
 
-    public static CurationResponse from(Curation curation, List<CurationCardResponse> curationCards) {
+    public static CurationResponse from(Curation curation,
+        List<CurationCardResponse> curationCards) {
         return CurationResponse.builder()
             .id(curation.getId())
             .curator(CurationCuratorResponse.from(curation.getCurator()))

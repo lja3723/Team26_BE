@@ -8,7 +8,6 @@ import org.ktc2.cokaen.wouldyouin._common.api.ParamDefaults;
 import org.ktc2.cokaen.wouldyouin.auth.Authorize;
 import org.ktc2.cokaen.wouldyouin.auth.MemberIdentifier;
 import org.ktc2.cokaen.wouldyouin.member.persist.MemberType;
-import org.ktc2.cokaen.wouldyouin.payment.dto.KakaoPayResponse;
 import org.ktc2.cokaen.wouldyouin.reservation.api.dto.KakaoPayReservationResponse;
 import org.ktc2.cokaen.wouldyouin.reservation.api.dto.ReservationRequest;
 import org.ktc2.cokaen.wouldyouin.reservation.api.dto.ReservationResponse;
@@ -37,8 +36,9 @@ public class ReservationController {
         @Authorize({MemberType.normal, MemberType.curator}) MemberIdentifier identifier,
         @RequestParam(defaultValue = ParamDefaults.PAGE) Integer page,
         @RequestParam(defaultValue = ParamDefaults.PAGE_SIZE) Integer size,
-        @RequestParam(defaultValue =  ParamDefaults.LAST_ID) Long lastId) {
-        return ApiResponse.ok(reservationService.getAllByMemberId(identifier, PageRequest.of(page, size), lastId));
+        @RequestParam(defaultValue = ParamDefaults.LAST_ID) Long lastId) {
+        return ApiResponse.ok(
+            reservationService.getAllByMemberId(identifier, PageRequest.of(page, size), lastId));
     }
 
     @GetMapping("/events/{eventId}")
@@ -48,7 +48,9 @@ public class ReservationController {
         @RequestParam(defaultValue = ParamDefaults.PAGE) Integer page,
         @RequestParam(defaultValue = ParamDefaults.PAGE_SIZE) Integer size,
         @RequestParam(defaultValue = ParamDefaults.LAST_ID) Long lastId) {
-        return ApiResponse.ok(reservationService.getAllByEventId(identifier, eventId, PageRequest.of(page, size), lastId));
+        return ApiResponse.ok(
+            reservationService.getAllByEventId(identifier, eventId, PageRequest.of(page, size),
+                lastId));
     }
 
     @GetMapping("/{reservationId}")
@@ -60,10 +62,12 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity<ApiResponseBody<KakaoPayReservationResponse>> createReservation(
         @Valid @RequestBody ReservationRequest reservationRequest,
-        @Authorize({MemberType.normal, MemberType.curator}) MemberIdentifier identifier) {
+        @Authorize({MemberType.normal, MemberType.curator}) MemberIdentifier identifier
+    ) {
         return ApiResponse.created(reservationService.create(identifier, reservationRequest));
     }
 
+    // 앱스토어 배포 시 결제 api 사용에 제한이 있어 만든 테스트 결제
     @PostMapping("/test")
     public ResponseEntity<ApiResponseBody<ReservationResponse>> createTestReservation(
         @Valid @RequestBody ReservationRequest reservationRequest,
@@ -74,7 +78,8 @@ public class ReservationController {
     @DeleteMapping("/{reservationId}")
     public ResponseEntity<ApiResponseBody<Void>> deleteReservation(
         @PathVariable Long reservationId,
-        @Authorize({MemberType.normal, MemberType.curator}) MemberIdentifier identifier) {
+        @Authorize({MemberType.normal, MemberType.curator}) MemberIdentifier identifier
+    ) {
         reservationService.delete(identifier, reservationId);
         return ApiResponse.noContent();
     }

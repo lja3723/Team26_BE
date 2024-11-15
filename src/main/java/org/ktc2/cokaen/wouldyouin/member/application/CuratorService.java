@@ -1,7 +1,9 @@
 package org.ktc2.cokaen.wouldyouin.member.application;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.ktc2.cokaen.wouldyouin._common.exception.EntityNotFoundException;
+import org.ktc2.cokaen.wouldyouin.auth.MemberIdentifier;
 import org.ktc2.cokaen.wouldyouin.image.application.MemberImageService;
 import org.ktc2.cokaen.wouldyouin.image.persist.MemberImage;
 import org.ktc2.cokaen.wouldyouin.member.api.dto.MemberResponse;
@@ -33,7 +35,7 @@ public class CuratorService implements MemberServiceCommonBehavior, LikeableMemb
     @Transactional(readOnly = true)
     public MemberResponse getMemberResponseById(Long id) {
         Curator curator = getByIdOrThrow(id);
-        return MemberResponse.from(curator, memberImageService.getImageUrl(curator.getProfileImage()));
+        return MemberResponse.from(curator, curator.getProfileImage().getId(), memberImageService.getImageUrl(curator.getProfileImage()));
     }
 
     @Override
@@ -76,22 +78,37 @@ public class CuratorService implements MemberServiceCommonBehavior, LikeableMemb
 
         curatorRepository.save(curator);
         memberImageService.setBaseMember(curator.getProfileImage(), curator);
-        return MemberResponse.from(curator, memberImageService.getImageUrl(curator.getProfileImage()));
+        return MemberResponse.from(curator, curator.getProfileImage().getId(), memberImageService.getImageUrl(curator.getProfileImage()));
     }
 
     @Transactional
-    public MemberResponse updateCurator(Long curatorId, CuratorEditRequest request) {
-        Curator curator = getByIdOrThrow(curatorId);
-        MemberImage image = memberImageService.getById(request.getProfileImageId());
-        String thumbnailImageUrl = memberImageService.createThumbnail(image.getName());
-        curator.updateFrom(request, image, thumbnailImageUrl);
-        memberImageService.setBaseMember(image, curator);
-        return MemberResponse.from(curator, memberImageService.getImageUrl(curator.getProfileImage()));
+    public MemberResponse updateCurator(MemberIdentifier identifier, CuratorEditRequest request) {
+        Curator curator = getByIdOrThrow(identifier.id());
+        MemberImage profileImage = curator.getProfileImage();
+        String profileImageThumbnailUrl = curator.getProfileImageThumbnailUrl();
+
+        if (Optional.ofNullable(request.getProfileImageId()).isPresent() && !request.getProfileImageId().equals(curator.getProfileImage().getId())) {
+            MemberImage newProfileImage = memberImageService.getById(request.getProfileImageId());
+            Optional.ofNullable(newProfileImage.getBaseMember()).ifPresent(x ->
+                memberImageService.validateMemberId(identifier, newProfileImage)
+            );
+
+            MemberImage toDelete = profileImage;
+            curator.setProfileImage(null);
+            memberImageService.deleteImage(identifier, toDelete.getId());
+            profileImage = memberImageService.getById(request.getProfileImageId());
+            profileImageThumbnailUrl = memberImageService.createThumbnail(profileImage.getName());
+            memberImageService.setBaseMember(profileImage, curator);
+        }
+
+        curator.updateFrom(request, profileImage, profileImageThumbnailUrl);
+        return MemberResponse.from(curator, curator.getProfileImage().getId(), memberImageService.getImageUrl(curator.getProfileImage()));
     }
 
     @Override
     @Transactional
-    public void deleteById(Long id) {
-        curatorRepository.delete(getByIdOrThrow(id));
+    public void deleteByMemberIdentifier(MemberIdentifier identifier) {
+        memberImageService.deleteImage(identifier, getByIdOrThrow(identifier.id()).getProfileImage().getId());
+        curatorRepository.delete(getByIdOrThrow(identifier.id()));
     }
 }

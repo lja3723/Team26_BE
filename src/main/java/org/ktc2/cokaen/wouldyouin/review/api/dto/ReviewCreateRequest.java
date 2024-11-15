@@ -5,17 +5,23 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import org.ktc2.cokaen.wouldyouin.event.persist.Event;
 import org.ktc2.cokaen.wouldyouin.member.persist.Member;
 import org.ktc2.cokaen.wouldyouin.review.persist.Review;
 
 @Getter
+@Setter
 @Builder(toBuilder = true)
 @EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
 public class ReviewCreateRequest {
 
@@ -35,6 +41,8 @@ public class ReviewCreateRequest {
         return Review.builder()
             .score(this.score)
             .content(this.content)
+            .member(member)
+            .event(event)
             .build();
     }
 }

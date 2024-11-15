@@ -15,8 +15,6 @@ import org.ktc2.cokaen.wouldyouin.advertisement.persist.Advertisement;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
-@ToString
 @NoArgsConstructor
 public class AdvertisementImage extends Image {
 
@@ -25,7 +23,8 @@ public class AdvertisementImage extends Image {
     private Advertisement advertisement;
 
     @Builder
-    public AdvertisementImage(String name, Long size, String extension, Advertisement advertisement) {
+    public AdvertisementImage(String name, Long size, String extension,
+        Advertisement advertisement) {
         super(name, size, extension);
         this.advertisement = advertisement;
     }

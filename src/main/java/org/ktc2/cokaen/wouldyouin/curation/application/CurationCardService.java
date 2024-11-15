@@ -9,7 +9,7 @@ import org.ktc2.cokaen.wouldyouin.curation.api.dto.CurationCardResponse;
 import org.ktc2.cokaen.wouldyouin.curation.persist.Curation;
 import org.ktc2.cokaen.wouldyouin.curation.persist.CurationCard;
 import org.ktc2.cokaen.wouldyouin.curation.persist.CurationCardRepository;
-import org.ktc2.cokaen.wouldyouin.image.application.CurationImageService;
+import org.ktc2.cokaen.wouldyouin.image.application.CurationCardImageService;
 import org.ktc2.cokaen.wouldyouin.image.persist.CurationCardImage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CurationCardService {
 
     private final CurationCardRepository curationCardRepository;
-    private final CurationImageService curationImageService;
+    private final CurationCardImageService curationCardImageService;
 
     @Transactional(readOnly = true)
     public CurationCardResponse getById(Long id) {
@@ -30,16 +30,17 @@ public class CurationCardService {
     @Transactional
     public CurationCard create(CurationCardRequest request) {
         List<CurationCardImage> images = request.getImageIds().stream()
-            .map(curationImageService::getById).toList();
+            .map(curationCardImageService::getById).toList();
         CurationCard curationCard = curationCardRepository.save(request.toEntity(images));
-        images.forEach(image -> curationImageService.setCuration(image, curationCard));
+        images.forEach(image -> curationCardImageService.setCuration(image, curationCard));
         return curationCard;
     }
 
     @Transactional
     public void delete(MemberIdentifier identifier, Long id) {
         CurationCard target = getByIdOrThrow(id);
-        target.getCurationCardImages().forEach(image -> curationImageService.deleteImage(identifier, image.getId()));
+        target.getCurationCardImages()
+            .forEach(image -> curationCardImageService.deleteImage(identifier, image.getId()));
         curationCardRepository.deleteById(id);
     }
 
@@ -49,12 +50,13 @@ public class CurationCardService {
     }
 
     private CurationCard getByIdOrThrow(Long id) {
-        return curationCardRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("해당하는 큐레이션 카드를 찾을 수 없습니다."));
+        return curationCardRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("해당하는 큐레이션 카드를 찾을 수 없습니다."));
     }
 
     private List<String> getImageUrls(CurationCard curationCard) {
         return curationCard.getCurationCardImages().stream()
-            .map(curationImageService::getImageUrl)
+            .map(curationCardImageService::getImageUrl)
             .toList();
     }
 }

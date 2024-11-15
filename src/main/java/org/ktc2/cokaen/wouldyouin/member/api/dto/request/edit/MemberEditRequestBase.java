@@ -1,18 +1,21 @@
 package org.ktc2.cokaen.wouldyouin.member.api.dto.request.edit;
 
-import jakarta.annotation.Nullable;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Getter
+@Setter
 @EqualsAndHashCode
 @ToString
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public abstract class MemberEditRequestBase {
 
-    @Nullable private final String nickname;
-    @Nullable private final String phoneNumber;
-    @Nullable private final Long profileImageId;
+    private String nickname;
+    private String phoneNumber;
+    private Long profileImageId;
 }

@@ -15,8 +15,6 @@ import org.ktc2.cokaen.wouldyouin.member.persist.BaseMember;
 @Entity
 @Setter
 @Getter
-@EqualsAndHashCode(callSuper = true)
-@ToString
 @NoArgsConstructor
 public class MemberImage extends Image {
 

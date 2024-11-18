@@ -1,27 +1,36 @@
 package org.ktc2.cokaen.wouldyouin.reservation.api;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.ktc2.cokaen.wouldyouin.auth.Authorize;
-import org.ktc2.cokaen.wouldyouin.auth.MemberIdentifier;
-import org.ktc2.cokaen.wouldyouin.member.persist.MemberType;
-import org.ktc2.cokaen.wouldyouin.reservation.api.dto.ReservationRequest;
-import org.ktc2.cokaen.wouldyouin.reservation.application.ReservationService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
 public class KakaoPaymentRedirectController {
 
-    @Value("${oauth.payment.approval_url}")
-    private String approvalUrl;
+    @Value("${oauth.payment.approval_deep_link}")
+    private String approvalDeepLink;
 
-    @PostMapping("/kakaopay/redirect")
-    public String createReservation1(@RequestParam("pg_token") String pgToken) {
-        return "redirect:" + approvalUrl + "?pg_token=" + pgToken;
+    @Value("${oauth.payment.cancel_deep_link}")
+    private String cancelDeepLink;
+
+    @Value("${oauth.payment.fail_deep_link}")
+    private String failDeepLink;
+
+    @PostMapping("/kakaopay/redirect/approval")
+    public String redirectKakaopayApproval(@RequestParam("pg_token") String pgToken) {
+        return "redirect:" + approvalDeepLink + "?pg_token=" + pgToken;
+    }
+
+    @PostMapping("/kakaopay/redirect/cancel")
+    public String redirectKakaopayCancel(@RequestParam("pg_token") String pgToken) {
+        return "redirect:" + cancelDeepLink + "?pg_token=" + pgToken;
+    }
+
+    @PostMapping("/kakaopay/redirect/fail")
+    public String redirectKakaopayFail(@RequestParam("pg_token") String pgToken) {
+        return "redirect:" + failDeepLink + "?pg_token=" + pgToken;
     }
 }

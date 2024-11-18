@@ -37,7 +37,7 @@ public class CurationController {
     public ResponseEntity<ApiResponseBody<CurationSliceResponse>> getCurationsByAreaOrderByCreatedDateDesc(
         @RequestParam(defaultValue = ParamDefaults.AREA) Area area,
         @RequestParam(defaultValue = ParamDefaults.PAGE) Integer page,
-        @RequestParam(defaultValue = ParamDefaults.PAGE_SIZE) Integer size,
+        @RequestParam(defaultValue = "3") Integer size,
         @RequestParam(defaultValue = ParamDefaults.LAST_ID) Long lastId
     ) {
         return ApiResponse.ok(curationService.getAllByAreaOrderByCreatedDateDesc(
@@ -48,7 +48,7 @@ public class CurationController {
     public ResponseEntity<ApiResponseBody<CurationSliceResponse>> getCurationsByCuratorIdOrderByCreatedDateDesc(
         @PathVariable("curatorId") Long curatorId,
         @RequestParam(defaultValue = ParamDefaults.PAGE) Integer page,
-        @RequestParam(defaultValue = ParamDefaults.PAGE_SIZE) Integer size,
+        @RequestParam(defaultValue = "3") Integer size,
         @RequestParam(defaultValue = ParamDefaults.LAST_ID) Long lastId
     ) {
         return ApiResponse.ok(curationService.getAllByCuratorIdOrderByCreatedDateDesc(

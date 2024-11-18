@@ -72,7 +72,7 @@ public class CurationService {
             .toList();
         Curation curation = curationRepository.save(
             curationCreateRequest.toEntity(curator, curationCards, events,
-                getThumbnailUrl(curationCards)));
+                curationCardImageService.getImageUrl(curationCards.getFirst().getCurationCardImages().get(0))));
         curationCards.forEach(
             curationCard -> curationCardService.setCuration(curationCard, curation));
         return CurationResponse.from(curation, getCurationCardResponses(curation));

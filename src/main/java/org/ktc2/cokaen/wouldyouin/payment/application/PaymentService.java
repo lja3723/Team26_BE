@@ -91,7 +91,7 @@ public class PaymentService {
             .partnerUserId("10")
             .itemName("상품명")
             .quantity("1")
-            .totalAmount("10000")
+            .totalAmount("1000000")
             .taxFreeAmount("0")
             .approvalUrl(approvalUrl)
             .cancelUrl(cancelUrl)
@@ -116,7 +116,6 @@ public class PaymentService {
     public void approvePayment(Long orderId, String pgToken) {
         Payment payment = paymentRepository.findById(orderId)
             .orElseThrow(() -> new FailedToPayException("결제 정보를 찾을 수 없습니다."));
-        System.out.println(PayCompleteRequest.from(payment, pgToken));
         client.post(
             Void.class,
             UriUtil.assembleFullUrl(kakaoPayRequestHost, "/online/v1/payment/approve"),
@@ -134,7 +133,6 @@ public class PaymentService {
     public void approvePaymentTest(Long orderId, String pgToken) {
         Payment payment = paymentRepository.findById(orderId)
             .orElseThrow(() -> new FailedToPayException("결제 정보를 찾을 수 없습니다."));
-        PayCompleteRequest payCompleteRequest = PayCompleteRequest.from(payment, pgToken);
         client.post(
             PayCompleteResponse.class,
             UriUtil.assembleFullUrl(kakaoPayRequestHost, "/online/v1/payment/approve"),

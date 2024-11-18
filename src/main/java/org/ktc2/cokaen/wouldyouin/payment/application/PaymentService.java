@@ -136,7 +136,7 @@ public class PaymentService {
         log.info("여기까지 오나요?");
         log.info("티아이디 : " + kakaoPayResponse.getTid());
         log.info("티아이디는요" + payment.getTid() + "입니당");
-        String address = kakaoPayResponse.getIosAppScheme() + "?orderId=" + payment.getPartnerOrderId();
+        String address = approvalUrl+ "?orderId=" + payment.getPartnerOrderId();
         log.info("주소는요" + address + "입니다");
         return address;
     }

@@ -1,5 +1,6 @@
 package org.ktc2.cokaen.wouldyouin.auth.api;
 
+import lombok.extern.slf4j.Slf4j;
 import org.ktc2.cokaen.wouldyouin._common.api.ApiResponse;
 import org.ktc2.cokaen.wouldyouin._common.api.ApiResponseBody;
 import org.ktc2.cokaen.wouldyouin._common.exception.BusinessException;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 //@RestController
+@Slf4j
 @Controller
 public class AuthRedirectController {
 
@@ -36,7 +38,9 @@ public class AuthRedirectController {
 
     @GetMapping("/auth/redirect/social/{accountType}")
     public String/*ResponseEntity<ApiResponseBody<String>>*/ redirect(@PathVariable("accountType")AccountType accountType, @RequestParam("code") String code) {
-        return "redirect:" + getRedirectUri(accountType) + "?code=" + code;
+        String redirectDeeplink = "redirect:" + getRedirectUri(accountType) + "?code=" + code;
+        log.debug("#### redirectDeeplink = {}", redirectDeeplink);
+        return redirectDeeplink;
 //        return ApiResponse.ok("redirect:" + getRedirectUri(accountType) + "?code=" + code);
     }
 }

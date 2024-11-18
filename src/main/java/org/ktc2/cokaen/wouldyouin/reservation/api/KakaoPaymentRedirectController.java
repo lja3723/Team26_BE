@@ -29,7 +29,7 @@ public class KakaoPaymentRedirectController {
     @Value("${oauth.payment.fail_deep_link}")
     private String failDeepLink;
 
-    private PaymentService paymentService;
+    private final PaymentService paymentService;
 
 
     @GetMapping("/kakaopay")

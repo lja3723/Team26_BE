@@ -9,6 +9,7 @@ import org.ktc2.cokaen.wouldyouin.event.persist.Event;
 import org.ktc2.cokaen.wouldyouin.image.persist.MemberImage;
 import org.ktc2.cokaen.wouldyouin.like.persist.CuratorLike;
 import org.ktc2.cokaen.wouldyouin.like.persist.HostLike;
+import org.ktc2.cokaen.wouldyouin.member.api.dto.MemberResponse;
 import org.ktc2.cokaen.wouldyouin.member.api.dto.relationResponse.CurationCuratorResponse;
 import org.ktc2.cokaen.wouldyouin.member.api.dto.relationResponse.ReviewMemberResponse;
 import org.ktc2.cokaen.wouldyouin.member.api.dto.relationResponse.ReservationMemberResponse;
@@ -202,7 +203,21 @@ public class MemberData {
         }
 
         public static class response {
-
+            public static MemberResponse get() {
+                return MemberResponse.builder()
+                    .memberId(R.host1.id)
+                    .accountType(AccountType.kakao)
+                    .email(R.host1.email)
+                    .nickname(R.host1.nickname)
+                    .phoneNumber(R.host1.phone)
+                    .profileImageId(R.host1.profileImage.getId())
+                    .profileUrl(R.host1.profileImageUrl)
+                    .profileThumbnailUrl(R.host1.profileImageThumbnailUrl)
+                    .intro(R.host1.intro)
+                    .likes(0)
+                    .hashtag(R.host1.hashtags)
+                    .build();
+            }
         }
     }
 

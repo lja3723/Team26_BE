@@ -269,7 +269,7 @@ public class EventData {
 
             public static EventResponse get() {
                 return EventResponse.from(EventData.event1.entity.get(),
-                    R.event1._Relation.imageUrls());
+                    R.event1._Relation.imageUrls(), MemberData.host1.response.get());
             }
 
             public static class slice{
@@ -315,7 +315,7 @@ public class EventData {
                         ImageData.R.event5.url);
 
                 return EventResponse.from(EventData.updatedEvent1.entity.get(),
-                    imageUrls);
+                    imageUrls, MemberData.host1.response.get());
             }
         }
     }

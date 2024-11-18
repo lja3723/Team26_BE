@@ -10,6 +10,7 @@ import org.ktc2.cokaen.wouldyouin._common.vo.Area;
 import org.ktc2.cokaen.wouldyouin._common.vo.Category;
 import org.ktc2.cokaen.wouldyouin._common.vo.Location;
 import org.ktc2.cokaen.wouldyouin.event.persist.Event;
+import org.ktc2.cokaen.wouldyouin.member.api.dto.MemberResponse;
 import org.ktc2.cokaen.wouldyouin.member.api.dto.relationResponse.EventHostResponse;
 import org.ktc2.cokaen.wouldyouin.member.persist.Host;
 
@@ -35,13 +36,12 @@ public class EventResponse {
     private List<String> images;
     private Boolean expired;
 
-    public static EventResponse from(Event event, List<String> imageUrls) {
-        Host host = event.getHost();
+    public static EventResponse from(Event event, List<String> imageUrls, MemberResponse host) {
         return EventResponse.builder()
             .id(event.getId())
             .title(event.getTitle())
             .content(event.getContent())
-            .host(EventHostResponse.from(host))
+            .host(EventHostResponse.from(host, host.getProfileUrl()))
             .area(event.getArea())
             .location(event.getLocation())
             .startTime(event.getStartTime())

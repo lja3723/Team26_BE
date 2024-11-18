@@ -20,6 +20,7 @@ import org.ktc2.cokaen.wouldyouin.event.persist.EventRepository;
 import org.ktc2.cokaen.wouldyouin.image.application.EventImageService;
 import org.ktc2.cokaen.wouldyouin.image.application.MemberImageService;
 import org.ktc2.cokaen.wouldyouin.image.persist.EventImage;
+import org.ktc2.cokaen.wouldyouin.member.api.dto.MemberResponse;
 import org.ktc2.cokaen.wouldyouin.member.application.HostService;
 import org.ktc2.cokaen.wouldyouin.member.persist.Host;
 import org.ktc2.cokaen.wouldyouin.member.persist.MemberType;
@@ -53,7 +54,7 @@ public class EventService {
     @Transactional(readOnly = true)
     public EventResponse getById(Long id) {
         Event event = getByIdOrThrow(id);
-        return EventResponse.from(event, getImageUrl(event));
+        return getEventResponse(event);
     }
 
     @Transactional(readOnly = true)
@@ -147,7 +148,10 @@ public class EventService {
     }
 
     private EventResponse getEventResponse(Event event) {
-        return EventResponse.from(event, getImageUrl(event));
+        Host host = event.getHost();
+        String hostProfileImageUrl = memberImageService.getImageUrl(host.getProfileImage());
+        MemberResponse hostResponse = MemberResponse.from(event.getHost(), host.getProfileImage().getId(), hostProfileImageUrl);
+        return EventResponse.from(event, getImageUrl(event), hostResponse);
     }
 
     private List<String> getImageUrl(Event event) {

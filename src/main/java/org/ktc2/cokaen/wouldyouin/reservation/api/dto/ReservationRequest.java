@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.ktc2.cokaen.wouldyouin.event.persist.Event;
 import org.ktc2.cokaen.wouldyouin.member.persist.Member;
+import org.ktc2.cokaen.wouldyouin.payment.dto.KakaoPayRequest;
 import org.ktc2.cokaen.wouldyouin.reservation.persist.Reservation;
 
 @Getter
@@ -35,4 +36,15 @@ public class ReservationRequest {
             .quantity(quantity)
             .build();
     }
+
+//    public static KakaoPayRequest toKakaoPayRequest() {
+//        return KakaoPayRequest.builder()
+//            .reservationId(reservation.getId().toString())
+//            .hostId(reservation.getEvent().getHost().getId().toString())
+//            .eventName(reservation.getEvent().getTitle())
+//            .quantity(reservation.getQuantity().toString())
+//            .totalAmount((reservation.getPrice() * reservation.getQuantity()) + "")
+//            .taxFreeAmount("0")
+//            .build();
+//    }
 }

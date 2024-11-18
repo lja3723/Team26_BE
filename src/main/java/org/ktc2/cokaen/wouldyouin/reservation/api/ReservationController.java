@@ -8,6 +8,8 @@ import org.ktc2.cokaen.wouldyouin._common.api.ParamDefaults;
 import org.ktc2.cokaen.wouldyouin.auth.Authorize;
 import org.ktc2.cokaen.wouldyouin.auth.MemberIdentifier;
 import org.ktc2.cokaen.wouldyouin.member.persist.MemberType;
+import org.ktc2.cokaen.wouldyouin.payment.application.PaymentService;
+import org.ktc2.cokaen.wouldyouin.payment.dto.KakaoPayResponse;
 import org.ktc2.cokaen.wouldyouin.reservation.api.dto.KakaoPayReservationResponse;
 import org.ktc2.cokaen.wouldyouin.reservation.api.dto.ReservationRequest;
 import org.ktc2.cokaen.wouldyouin.reservation.api.dto.ReservationResponse;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReservationController {
 
     private final ReservationService reservationService;
+    private final PaymentService paymentService;
 
     @GetMapping
     public ResponseEntity<ApiResponseBody<ReservationSliceResponse>> getReservationsByMemberId(
@@ -59,13 +62,13 @@ public class ReservationController {
         return ApiResponse.ok(reservationService.getById(reservationId));
     }
 
-    @PostMapping
-    public ResponseEntity<ApiResponseBody<KakaoPayReservationResponse>> createReservation(
-        @Valid @RequestBody ReservationRequest reservationRequest,
-        @Authorize({MemberType.normal, MemberType.curator}) MemberIdentifier identifier
-    ) {
-        return ApiResponse.created(reservationService.create(identifier, reservationRequest));
-    }
+//    @PostMapping
+//    public ResponseEntity<ApiResponseBody<KakaoPayResponse>> createReservation(
+//        @Valid @RequestBody ReservationRequest reservationRequest,
+//        @Authorize({MemberType.normal, MemberType.curator}) MemberIdentifier identifier
+//    ) {
+//        return ApiResponse.created(paymentService.createPaymentRequest(identifier, reservationRequest));
+//    }
 
     // 앱스토어 배포 시 결제 api 사용에 제한이 있어 만든 테스트 결제
     @PostMapping("/test")

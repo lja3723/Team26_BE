@@ -30,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
-    private final PaymentService paymentService;
     private final MemberService memberService;
     private final EventService eventService;
 
@@ -58,18 +57,15 @@ public class ReservationService {
     }
 
     @Transactional
-    public KakaoPayReservationResponse create(
-        MemberIdentifier identifier, ReservationRequest reservationRequest) {
+    public ReservationResponse create(
+        Long memberId, ReservationRequest reservationRequest) {
         Reservation reservation = reservationRepository.save(reservationRequest.toEntity(
-            memberService.getByIdOrThrow(identifier.id()),
+            memberService.getByIdOrThrow(memberId),
             eventService.getByIdOrThrow(reservationRequest.getEventId()))
         );
         eventService.decreaseLeftSeat(reservation.getEvent().getId(),
             reservationRequest.getQuantity());
-        KakaoPayResponse kakaoPayResponse = paymentService.createPayment(
-            KakaoPayRequest.from(reservation));
-        ReservationResponse reservationResponse = ReservationResponse.from(reservation);
-        return KakaoPayReservationResponse.from(reservationResponse, kakaoPayResponse);
+        return ReservationResponse.from(reservation);
     }
 
     @Transactional

@@ -1,10 +1,18 @@
 package org.ktc2.cokaen.wouldyouin.reservation.api;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.ktc2.cokaen.wouldyouin.auth.Authorize;
+import org.ktc2.cokaen.wouldyouin.auth.MemberIdentifier;
+import org.ktc2.cokaen.wouldyouin.member.persist.MemberType;
+import org.ktc2.cokaen.wouldyouin.payment.application.PaymentService;
+import org.ktc2.cokaen.wouldyouin.reservation.api.dto.ReservationRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Slf4j
@@ -21,11 +29,27 @@ public class KakaoPaymentRedirectController {
     @Value("${oauth.payment.fail_deep_link}")
     private String failDeepLink;
 
+    private PaymentService paymentService;
+
+
+    @GetMapping("/kakaopay")
+    public void redirectKakaopay() {
+        createReservation(ReservationRequest.builder().eventId(1L).quantity(1).build(),
+            new MemberIdentifier(1L, MemberType.normal));
+    }
+
+    @PostMapping("/api/reservations")
+    public String createReservation(
+        @Valid @RequestBody ReservationRequest reservationRequest,
+        @Authorize({MemberType.normal, MemberType.curator}) MemberIdentifier identifier
+    ) {
+        return paymentService.readyPayment(identifier, reservationRequest);
+    }
+
     @GetMapping("/kakaopay/redirect/approval")
-    public String redirectKakaopayApproval(@RequestParam("pg_token") String pgToken) {
-        String redirectDeeplink = "redirect:" + approvalDeepLink + "?pg_token=" + pgToken;
-        log.debug("#### redirectDeeplink = {}", redirectDeeplink);
-        return redirectDeeplink;
+    public String redirectKakaopayApproval(@RequestParam("pg_token") String pgToken, @RequestParam Long OrderId) {
+        paymentService.approvePayment(OrderId, pgToken);
+        return approvalDeepLink;
     }
 
     @GetMapping("/kakaopay/redirect/cancel")

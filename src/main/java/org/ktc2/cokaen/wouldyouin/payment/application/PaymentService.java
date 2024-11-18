@@ -75,7 +75,7 @@ public class PaymentService {
 //            .body(KakaoPayResponse.class);
 //    }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public String readyPayment(MemberIdentifier identifier, ReservationRequest reservationRequest) {
         KakaoPayRequest kakaoPayRequest =
             KakaoPayRequest.of(
@@ -96,7 +96,7 @@ public class PaymentService {
         return kakaoPayResponse.getAndroidAppScheme() + "?orderId=" + payment.getPartnerOrderId();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public String readyPaymentTest() {
         Payment payment = Payment.builder()
             .partnerOrderId(1L)
@@ -133,6 +133,7 @@ public class PaymentService {
         return kakaoPayResponse.getIosAppScheme() + "?orderId=" + payment.getPartnerOrderId();
     }
 
+    @Transactional
     public void approvePayment(Long orderId, String pgToken) {
         Payment payment = paymentRepository.findById(orderId)
             .orElseThrow(() -> new FailedToPayException("결제 정보를 찾을 수 없습니다."));
@@ -150,6 +151,7 @@ public class PaymentService {
         reservationService.create(payment.getPartnerUserId(), request);
     }
 
+    @Transactional
     public void approvePaymentTest(Long orderId, String pgToken) {
         Payment payment = paymentRepository.findById(orderId)
             .orElseThrow(() -> new FailedToPayException("결제 정보를 찾을 수 없습니다."));

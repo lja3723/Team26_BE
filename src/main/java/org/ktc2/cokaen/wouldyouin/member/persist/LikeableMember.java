@@ -1,6 +1,7 @@
 package org.ktc2.cokaen.wouldyouin.member.persist;
 
 import java.util.List;
+import org.ktc2.cokaen.wouldyouin.image.persist.MemberImage;
 
 public interface LikeableMember {
 
@@ -8,7 +9,7 @@ public interface LikeableMember {
 
     String getNickname();
 
-    String getProfileImageUrl();
+    MemberImage getProfileImage();
 
     String getIntro();
 

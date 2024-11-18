@@ -22,13 +22,13 @@ public class LikeResponse {
     private final List<String> hashtags;
     private final String profileImageUrl;
 
-    public static LikeResponse from(LikeableMember member) {
+    public static LikeResponse from(LikeableMember member, String profileImageUrl) {
         return LikeResponse.builder()
             .memberId(member.getId())
             .nickname(member.getNickname())
             .intro(member.getIntro())
             .hashtags(member.getHashtags())
-            .profileImageUrl(member.getProfileImageUrl())
+            .profileImageUrl(profileImageUrl)
             .build();
     }
 }

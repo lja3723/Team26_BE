@@ -3,6 +3,7 @@ package org.ktc2.cokaen.wouldyouin.like.application;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.ktc2.cokaen.wouldyouin.auth.MemberIdentifier;
+import org.ktc2.cokaen.wouldyouin.image.application.MemberImageService;
 import org.ktc2.cokaen.wouldyouin.like.api.dto.LikeResponse;
 import org.ktc2.cokaen.wouldyouin.like.api.dto.LikeSliceResponse;
 import org.ktc2.cokaen.wouldyouin.like.api.dto.LikeToggleResponse;
@@ -24,6 +25,7 @@ public abstract class LikeService<LikeType extends Like<? extends LikeableMember
 
     private final LikeableMemberGetterFactory likeableMemberGetterFactory;
     private final MemberService memberService;
+    private final MemberImageService memberImageService;
 
     protected abstract LikeRepository<LikeType> getLikeRepository();
 
@@ -37,7 +39,8 @@ public abstract class LikeService<LikeType extends Like<? extends LikeableMember
             memberService.getByIdOrThrow(identifier.id()), beforeLastId, pageable);
         Long newLastId = getLastId(likes, beforeLastId);
         List<LikeResponse> responses = likes.stream()
-            .map(like -> LikeResponse.from(like.getLikeableMember())).toList();
+            .map(like -> LikeResponse.from(like.getLikeableMember(),
+                memberImageService.getImageUrl(like.getLikeableMember().getProfileImage()))).toList();
         return LikeSliceResponse.from(responses, likes.getSize(), newLastId);
     }
 

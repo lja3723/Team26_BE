@@ -59,7 +59,7 @@ class MemberServiceUnitTest {
     @DisplayName("일반 사용자 생성 테스트")
     void createMember() {
         // given
-        given(memberCreateRequest.getProfileImageUrl()).willReturn(validMember.getProfileImageUrl());
+        given(memberCreateRequest.getProfileImageUrl()).willReturn(validMember.getProfileImageName());
         given(memberCreateRequest.toEntity(validMember.getProfileImage(), validMember.getProfileImageThumbnailUrl())).willReturn(validMember);
         given(memberRepository.save(validMember)).willReturn(validMember);
         given(memberImageService.convert(memberCreateRequest.getProfileImageUrl())).willReturn(validMember.getProfileImage());

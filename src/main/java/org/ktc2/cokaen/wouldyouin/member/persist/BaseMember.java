@@ -67,7 +67,7 @@ public abstract class BaseMember {
         this.profileImageThumbnailUrl = profileImageThumbnailUrl;
     }
 
-    public String getProfileImageUrl() {
+    public String getProfileImageName() {
         return profileImage.getName();
     }
 }

@@ -1,5 +1,6 @@
 package org.ktc2.cokaen.wouldyouin.like.application;
 
+import org.ktc2.cokaen.wouldyouin.image.application.MemberImageService;
 import org.ktc2.cokaen.wouldyouin.like.persist.HostLike;
 import org.ktc2.cokaen.wouldyouin.like.persist.HostLikeRepository;
 import org.ktc2.cokaen.wouldyouin.like.persist.LikeRepository;
@@ -18,8 +19,8 @@ public class HostLikeService extends LikeService<HostLike> {
 
     public HostLikeService(
         LikeableMemberGetterFactory likeableMemberGetterFactory,
-        MemberService memberService, HostLikeRepository hostLikeRepository) {
-        super(likeableMemberGetterFactory, memberService);
+        MemberService memberService, HostLikeRepository hostLikeRepository, MemberImageService memberImageService) {
+        super(likeableMemberGetterFactory, memberService, memberImageService);
         this.hostLikeRepository = hostLikeRepository;
     }
 

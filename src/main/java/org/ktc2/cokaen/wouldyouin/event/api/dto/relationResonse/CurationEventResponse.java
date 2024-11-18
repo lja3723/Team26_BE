@@ -33,7 +33,7 @@ public class CurationEventResponse {
             .thumbnailImageUrl(event.getThumbnailUrl())
             .hostProfileImageUrl(Optional.of(event)
                 .map(Event::getHost)
-                .map(BaseMember::getProfileImageUrl)
+                .map(BaseMember::getProfileImageName)
                 .orElse(""))
             .hostNickname(event.getHost().getNickname())
             .build();

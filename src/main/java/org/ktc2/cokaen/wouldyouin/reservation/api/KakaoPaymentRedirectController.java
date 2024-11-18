@@ -35,7 +35,7 @@ public class KakaoPaymentRedirectController {
 
     @GetMapping("/kakaopay")
     public String redirectKakaopay(RedirectAttributes redirectAttribute) {
-        return "redirect:" + paymentService.readyPaymentTest() + "?orderId=1";
+        return "redirect:" + paymentService.readyPaymentTest();
     }
 
     @PostMapping("/api/reservations")

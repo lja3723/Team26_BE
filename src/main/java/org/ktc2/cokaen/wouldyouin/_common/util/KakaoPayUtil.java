@@ -27,7 +27,7 @@ public class KakaoPayUtil {
         body.put("quantity", kakaoPayRequest.getQuantity());
         body.put("total_amount", kakaoPayRequest.getTotalAmount());
         body.put("tax_free_amount", kakaoPayRequest.getTaxFreeAmount());
-        body.put("approval_url", kakaoPayRequest.getApprovalUrl() + "orderId=" + orderId);
+        body.put("approval_url", kakaoPayRequest.getApprovalUrl() + "?orderId=" + orderId);
         body.put("cancel_url", kakaoPayRequest.getCancelUrl());
         body.put("fail_url", kakaoPayRequest.getFailUrl());
         return body;

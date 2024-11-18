@@ -89,7 +89,7 @@ public class PaymentService {
         KakaoPayRequest kakaoPayRequest = KakaoPayRequest.builder()
             .cid("TC0ONETIME")
             .partnerUserId("10")
-            .itemName("아이템 이름임")
+            .itemName("상품명")
             .quantity("1")
             .totalAmount("10000")
             .taxFreeAmount("0")
@@ -109,7 +109,7 @@ public class PaymentService {
         );
         payment.setTid(kakaoPayResponse.getTid());
         paymentRepository.save(payment);
-        return kakaoPayResponse.getIosAppScheme();
+        return kakaoPayResponse.getNextRedirectPcUrl() + "?orderId=" + payment.getPartnerOrderId();
     }
 
     @Transactional

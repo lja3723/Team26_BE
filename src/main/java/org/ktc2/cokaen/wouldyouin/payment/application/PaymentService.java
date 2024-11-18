@@ -1,6 +1,7 @@
 package org.ktc2.cokaen.wouldyouin.payment.application;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.ktc2.cokaen.wouldyouin._common.util.KakaoPayUtil;
 import org.ktc2.cokaen.wouldyouin._common.util.RestClientUtil;
 import org.ktc2.cokaen.wouldyouin._common.util.UriUtil;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
@@ -129,7 +131,10 @@ public class PaymentService {
                 throw new FailedToPayException("카카오페이 API 요청을 실패하였습니다.");
             }
         );
+        log.info("여기까지??");
         payment.setTid(kakaoPayResponse.getTid());
+        log.info("여기까지 오나요?");
+        paymentRepository.flush();
         return kakaoPayResponse.getIosAppScheme() + "?orderId=" + payment.getPartnerOrderId();
     }
 

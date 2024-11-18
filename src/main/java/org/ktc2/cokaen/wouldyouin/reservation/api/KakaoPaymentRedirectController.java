@@ -33,9 +33,8 @@ public class KakaoPaymentRedirectController {
 
 
     @GetMapping("/kakaopay")
-    public void redirectKakaopay() {
-        createReservation(ReservationRequest.builder().eventId(1L).quantity(1).build(),
-            new MemberIdentifier(1L, MemberType.normal));
+    public String redirectKakaopay() {
+        return "redirect:" + paymentService.readyPaymentTest();
     }
 
     @PostMapping("/api/reservations")

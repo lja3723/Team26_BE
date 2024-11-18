@@ -96,6 +96,43 @@ public class PaymentService {
         return kakaoPayResponse.getAndroidAppScheme() + "?orderId=" + payment.getPartnerOrderId();
     }
 
+    @Transactional(readOnly = true)
+    public String readyPaymentTest() {
+        Payment payment = Payment.builder()
+            .partnerOrderId(1L)
+            .partnerUserId(10L)
+            .quantity(1)
+            .cid("TC0ONETIME")
+            .eventId(1L)
+            .itemName("아이템 이름임")
+            .build();
+        paymentRepository.save(payment);
+
+        KakaoPayRequest kakaoPayRequest = KakaoPayRequest.builder()
+            .cid("TC0ONETIME")
+            .partnerUserId("10")
+            .itemName("아이템 이름임")
+            .quantity("1")
+            .totalAmount("10000")
+            .taxFreeAmount("0")
+            .approvalUrl(approvalUrl)
+            .cancelUrl(cancelUrl)
+            .failUrl(failUrl)
+            .build();
+
+        KakaoPayResponse kakaoPayResponse =  client.post(
+            KakaoPayResponse.class,
+            UriUtil.assembleFullUrl(kakaoPayRequestHost, kakaoPaySinglePaymentUrl),
+            KakaoPayUtil.createKakaoPayRequestHeaders(kakaoPayRequestHost, secretKey),
+            KakaoPayUtil.createKakaoPayRequestBody(payment.getPartnerOrderId(), kakaoPayRequest),
+            (req, rsp) -> {
+                throw new FailedToPayException("카카오페이 API 요청을 실패하였습니다.");
+            }
+        );
+        payment.setTid(kakaoPayResponse.getTid());
+        return kakaoPayResponse.getIosAppScheme() + "?orderId=" + payment.getPartnerOrderId();
+    }
+
     public void approvePayment(Long orderId, String pgToken) {
         Payment payment = paymentRepository.findById(orderId)
             .orElseThrow(() -> new FailedToPayException("결제 정보를 찾을 수 없습니다."));
@@ -111,5 +148,20 @@ public class PaymentService {
         );
         ReservationRequest request = new ReservationRequest(payment.getEventId(), payment.getQuantity());
         reservationService.create(payment.getPartnerUserId(), request);
+    }
+
+    public void approvePaymentTest(Long orderId, String pgToken) {
+        Payment payment = paymentRepository.findById(orderId)
+            .orElseThrow(() -> new FailedToPayException("결제 정보를 찾을 수 없습니다."));
+        PayCompleteRequest payCompleteRequest = PayCompleteRequest.from(payment, pgToken);
+        client.post(
+            Void.class,
+            UriUtil.assembleFullUrl(kakaoPayRequestHost, "/online/v1/payment/approve"),
+            KakaoPayUtil.createKakaoPayRequestHeaders(kakaoPayRequestHost, secretKey),
+            KakaoPayUtil.createPayCompleteRequestBody(payment, pgToken),
+            (req, rsp) -> {
+                throw new FailedToPayException("카카오페이 결제 승인을 실패하였습니다.");
+            }
+        );
     }
 }

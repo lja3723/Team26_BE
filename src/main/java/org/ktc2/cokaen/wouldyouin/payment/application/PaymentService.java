@@ -11,6 +11,7 @@ import org.ktc2.cokaen.wouldyouin.member.application.MemberService;
 import org.ktc2.cokaen.wouldyouin.payment.dto.KakaoPayRequest;
 import org.ktc2.cokaen.wouldyouin.payment.dto.KakaoPayResponse;
 import org.ktc2.cokaen.wouldyouin.payment.dto.PayCompleteRequest;
+import org.ktc2.cokaen.wouldyouin.payment.dto.PayCompleteResponse;
 import org.ktc2.cokaen.wouldyouin.payment.exception.FailedToPayException;
 import org.ktc2.cokaen.wouldyouin.payment.persist.Payment;
 import org.ktc2.cokaen.wouldyouin.payment.persist.PaymentRepository;
@@ -51,32 +52,6 @@ public class PaymentService {
     @Value("${oauth.payment.secret_key}")
     private String secretKey;
 
-
-//    @Transactional
-//    public KakaoPayReservationResponse create(
-//        MemberIdentifier identifier, ReservationRequest reservationRequest) {
-//        Reservation reservation = reservationRepository.save(reservationRequest.toEntity(
-//            memberService.getByIdOrThrow(identifier.id()),
-//            eventService.getByIdOrThrow(reservationRequest.getEventId()))
-//        );
-//        eventService.decreaseLeftSeat(reservation.getEvent().getId(),
-//            reservationRequest.getQuantity());
-//        KakaoPayResponse kakaoPayResponse = createPayment(
-//            KakaoPayRequest.from(reservation));
-//        ReservationResponse reservationResponse = ReservationResponse.from(reservation);
-//        return KakaoPayReservationResponse.from(reservationResponse, kakaoPayResponse);
-//    }
-//
-//    public KakaoPayResponse createPayment(KakaoPayRequest kakaoPayRequest) {
-//        return RestClient.builder().build().post().uri(UriUtil.assembleFullUrl(kakaoPayRequestHost, kakaoPaySinglePaymentUrl))
-//            .header("Host", "open-api.kakaopay.com")
-//            .header("Authorization", "SECRET_KEY " + secretKey)
-//            .contentType(MediaType.APPLICATION_JSON)
-//            .body(KakaoPayUtil.createKakaoPayRequestBody(kakaoPayRequest))
-//            .retrieve()
-//            .body(KakaoPayResponse.class);
-//    }
-
     @Transactional
     public String readyPayment(MemberIdentifier identifier, ReservationRequest reservationRequest) {
         KakaoPayRequest kakaoPayRequest =
@@ -95,6 +70,7 @@ public class PaymentService {
             }
         );
         payment.setTid(kakaoPayResponse.getTid());
+        paymentRepository.save(payment);
         return kakaoPayResponse.getAndroidAppScheme() + "?orderId=" + payment.getPartnerOrderId();
     }
 
@@ -106,7 +82,7 @@ public class PaymentService {
             .quantity(1)
             .cid("TC0ONETIME")
             .eventId(1L)
-            .itemName("아이템 이름임")
+            .itemName("아이템 이름")
             .build();
         paymentRepository.save(payment);
 
@@ -131,21 +107,16 @@ public class PaymentService {
                 throw new FailedToPayException("카카오페이 API 요청을 실패하였습니다.");
             }
         );
-        log.info("여기까지??");
         payment.setTid(kakaoPayResponse.getTid());
-        log.info("여기까지 오나요?");
-        log.info("티아이디 : " + kakaoPayResponse.getTid());
-        log.info("티아이디는요" + payment.getTid() + "입니당");
-        String address = approvalUrl+ "?orderId=" + payment.getPartnerOrderId();
-        log.info("주소는요" + address + "입니다");
-        return address;
+        paymentRepository.save(payment);
+        return kakaoPayResponse.getIosAppScheme();
     }
 
     @Transactional
     public void approvePayment(Long orderId, String pgToken) {
         Payment payment = paymentRepository.findById(orderId)
             .orElseThrow(() -> new FailedToPayException("결제 정보를 찾을 수 없습니다."));
-        PayCompleteRequest payCompleteRequest = PayCompleteRequest.from(payment, pgToken);
+        System.out.println(PayCompleteRequest.from(payment, pgToken));
         client.post(
             Void.class,
             UriUtil.assembleFullUrl(kakaoPayRequestHost, "/online/v1/payment/approve"),
@@ -165,7 +136,7 @@ public class PaymentService {
             .orElseThrow(() -> new FailedToPayException("결제 정보를 찾을 수 없습니다."));
         PayCompleteRequest payCompleteRequest = PayCompleteRequest.from(payment, pgToken);
         client.post(
-            Void.class,
+            PayCompleteResponse.class,
             UriUtil.assembleFullUrl(kakaoPayRequestHost, "/online/v1/payment/approve"),
             KakaoPayUtil.createKakaoPayRequestHeaders(kakaoPayRequestHost, secretKey),
             KakaoPayUtil.createPayCompleteRequestBody(payment, pgToken),

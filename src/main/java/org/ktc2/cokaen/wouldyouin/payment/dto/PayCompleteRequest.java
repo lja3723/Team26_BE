@@ -12,6 +12,7 @@ import org.ktc2.cokaen.wouldyouin.payment.persist.Payment;
 @Builder
 @AllArgsConstructor
 @JsonNaming(value = SnakeCaseStrategy.class)
+@ToString
 public class PayCompleteRequest {
     private String cid;
     private String tid;

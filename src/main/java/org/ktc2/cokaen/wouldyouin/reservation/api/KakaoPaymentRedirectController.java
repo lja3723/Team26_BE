@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Slf4j
 @Controller
@@ -33,8 +34,8 @@ public class KakaoPaymentRedirectController {
 
 
     @GetMapping("/kakaopay")
-    public String redirectKakaopay() {
-        return "redirect:" + paymentService.readyPaymentTest();
+    public String redirectKakaopay(RedirectAttributes redirectAttribute) {
+        return "redirect:" + paymentService.readyPaymentTest() + "?orderId=1";
     }
 
     @PostMapping("/api/reservations")
@@ -46,10 +47,8 @@ public class KakaoPaymentRedirectController {
     }
 
     @GetMapping("/kakaopay/redirect/approval")
-    public String redirectKakaopayApproval(@RequestParam("pg_token") String pgToken, @RequestParam Long OrderId) {
-        log.debug("페이여기까지도?");
-        paymentService.approvePayment(OrderId, pgToken);
-        log.debug("그러면 여기는?");
+    public String redirectKakaopayApproval(@RequestParam("pg_token") String pgToken, @RequestParam Long orderId) {
+        paymentService.approvePaymentTest(orderId, pgToken);
         return "redirect:" + "https://wouldyouin.store/payview";
 //        return approvalDeepLink;
     }

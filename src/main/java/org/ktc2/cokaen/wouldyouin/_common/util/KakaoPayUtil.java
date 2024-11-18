@@ -27,7 +27,7 @@ public class KakaoPayUtil {
         body.put("quantity", kakaoPayRequest.getQuantity());
         body.put("total_amount", kakaoPayRequest.getTotalAmount());
         body.put("tax_free_amount", kakaoPayRequest.getTaxFreeAmount());
-        body.put("approval_url", kakaoPayRequest.getApprovalUrl());
+        body.put("approval_url", kakaoPayRequest.getApprovalUrl() + "orderId=" + orderId);
         body.put("cancel_url", kakaoPayRequest.getCancelUrl());
         body.put("fail_url", kakaoPayRequest.getFailUrl());
         return body;
@@ -36,7 +36,7 @@ public class KakaoPayUtil {
     public static Map<String, String> createPayCompleteRequestBody(Payment payment, String pgToken) {
         Map<String, String> body = new HashMap<>();
         body.put("cid", payment.getCid());
-        body.put("tid", UUID.randomUUID().toString());
+        body.put("tid", payment.getTid());
         body.put("partner_order_id", payment.getPartnerOrderId() + "");
         body.put("partner_user_id", payment.getPartnerUserId() + "");
         body.put("pg_token", pgToken);

@@ -134,8 +134,10 @@ public class PaymentService {
         log.info("여기까지??");
         payment.setTid(kakaoPayResponse.getTid());
         log.info("여기까지 오나요?");
+        log.info("티아이디 : " + kakaoPayResponse.getTid());
         paymentRepository.flush();
-        return kakaoPayResponse.getIosAppScheme() + "?orderId=" + payment.getPartnerOrderId();
+        String address = kakaoPayResponse.getIosAppScheme() + "?orderId=" + payment.getPartnerOrderId();
+        return address;
     }
 
     @Transactional

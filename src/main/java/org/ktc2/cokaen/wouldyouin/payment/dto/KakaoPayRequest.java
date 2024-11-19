@@ -38,7 +38,7 @@ public class KakaoPayRequest {
             .quantity(request.getQuantity() + "")
             .totalAmount(event.getPrice() * request.getQuantity() + "")
             .taxFreeAmount("0")
-            .approvalUrl(approvalUrl)
+            .approvalUrl(approvalUrl + "?orderId=")
             .cancelUrl(cancelUrl)
             .failUrl(failUrl)
             .build();

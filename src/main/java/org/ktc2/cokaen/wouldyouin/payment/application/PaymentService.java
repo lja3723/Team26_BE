@@ -66,7 +66,7 @@ public class PaymentService {
         );
         payment.setTid(kakaoPayResponse.getTid());
         paymentRepository.save(payment);
-        kakaoPayResponse.setNextRedirectAppUrl(kakaoPayResponse.getNextRedirectAppUrl() + "?orderId=" + payment.getPartnerOrderId());
+        kakaoPayResponse.setNextRedirectAppUrl(kakaoPayResponse.getNextRedirectAppUrl() + payment.getPartnerOrderId());
 //        return kakaoPayResponse.getNextRedirectAppUrl() + "?orderId=" + payment.getPartnerOrderId();
         return KakaoPayReservationResponse.builder().reservationResponse(null)
             .kakaoPayResponse(kakaoPayResponse).build();

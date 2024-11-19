@@ -94,11 +94,11 @@ oauth:
       - profile
   payment:
     "approval_url": ${SERVER_DOMAIN_NAME}/kakaopay/redirect/approval
-    "approval_deep_link": wouldyouin://booking/payment/check/payment_approve
+    "approval_deep_link": wouldyouin://payment/check/payment_approve
     "cancel_url": ${SERVER_DOMAIN_NAME}/kakaopay/redirect/cancel
-    "cancel_deep_link": wouldyouin://booking/payment/check/payment_cancel
+    "cancel_deep_link": wouldyouin://payment/check/payment_cancel
     "fail_url": ${SERVER_DOMAIN_NAME}/kakaopay/redirect/fail
-    "fail_deep_link": wouldyouin://booking/payment/check/payment_fail
+    "fail_deep_link": wouldyouin://payment/check/payment_fail
     "secret_key": ${KAKAOPAY_SECRET_KEY}
     "kakao_pay_single_payment_url": online/v1/payment/ready
     "kakao-pay-request-host": https://open-api.kakaopay.com

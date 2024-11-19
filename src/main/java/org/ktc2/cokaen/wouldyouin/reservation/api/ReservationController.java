@@ -70,6 +70,14 @@ public class ReservationController {
 //        return ApiResponse.created(paymentService.createPaymentRequest(identifier, reservationRequest));
 //    }
 
+    @PostMapping
+    public ResponseEntity<ApiResponseBody<KakaoPayReservationResponse>> createReservation(
+        @Valid @RequestBody ReservationRequest reservationRequest,
+        @Authorize({MemberType.normal, MemberType.curator}) MemberIdentifier identifier
+    ) {
+        return ApiResponse.created(paymentService.readyPayment(identifier, reservationRequest));
+    }
+
     // 앱스토어 배포 시 결제 api 사용에 제한이 있어 만든 테스트 결제
     @PostMapping("/test")
     public ResponseEntity<ApiResponseBody<ReservationResponse>> createTestReservation(

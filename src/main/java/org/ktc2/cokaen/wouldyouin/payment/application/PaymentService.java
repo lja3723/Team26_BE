@@ -14,6 +14,7 @@ import org.ktc2.cokaen.wouldyouin.payment.dto.PayCompleteResponse;
 import org.ktc2.cokaen.wouldyouin.payment.exception.FailedToPayException;
 import org.ktc2.cokaen.wouldyouin.payment.persist.Payment;
 import org.ktc2.cokaen.wouldyouin.payment.persist.PaymentRepository;
+import org.ktc2.cokaen.wouldyouin.reservation.api.dto.KakaoPayReservationResponse;
 import org.ktc2.cokaen.wouldyouin.reservation.api.dto.ReservationRequest;
 import org.ktc2.cokaen.wouldyouin.reservation.application.ReservationService;
 import org.ktc2.cokaen.wouldyouin.reservation.persist.ReservationRepository;
@@ -47,7 +48,7 @@ public class PaymentService {
     private String secretKey;
 
     @Transactional
-    public String readyPayment(MemberIdentifier identifier, ReservationRequest reservationRequest) {
+    public KakaoPayReservationResponse readyPayment(MemberIdentifier identifier, ReservationRequest reservationRequest) {
         KakaoPayRequest kakaoPayRequest =
             KakaoPayRequest.of(
                 identifier, eventService.getByIdOrThrow(reservationRequest.getEventId()),
@@ -65,7 +66,10 @@ public class PaymentService {
         );
         payment.setTid(kakaoPayResponse.getTid());
         paymentRepository.save(payment);
-        return kakaoPayResponse.getNextRedirectAppUrl() + "?orderId=" + payment.getPartnerOrderId();
+        kakaoPayResponse.setNextRedirectAppUrl(kakaoPayResponse.getNextRedirectAppUrl() + "?orderId=" + payment.getPartnerOrderId());
+//        return kakaoPayResponse.getNextRedirectAppUrl() + "?orderId=" + payment.getPartnerOrderId();
+        return KakaoPayReservationResponse.builder().reservationResponse(null)
+            .kakaoPayResponse(kakaoPayResponse).build();
     }
 
     @Transactional

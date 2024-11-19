@@ -6,20 +6,22 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 @Getter
+@Setter
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
 @JsonNaming(value = SnakeCaseStrategy.class)
 public class KakaoPayResponse {
 
-    private final String tid;
-    private final String nextRedirectAppUrl;
-    private final String nextRedirectMobileUrl;
-    private final String nextRedirectPcUrl;
-    private final String androidAppScheme;
-    private final String iosAppScheme;
-    private final LocalDateTime createdAt;
+    private  String tid;
+    private  String nextRedirectAppUrl;
+    private  String nextRedirectMobileUrl;
+    private  String nextRedirectPcUrl;
+    private  String androidAppScheme;
+    private  String iosAppScheme;
+    private  LocalDateTime createdAt;
 }

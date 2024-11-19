@@ -39,13 +39,13 @@ public class KakaoPaymentRedirectController {
         return "redirect:" + paymentService.readyPaymentTest();
     }
 
-    @PostMapping("/api/reservations")
-    public String createReservation(
-        @Valid @RequestBody ReservationRequest reservationRequest,
-        @Authorize({MemberType.normal, MemberType.curator}) MemberIdentifier identifier
-    ) {
-        return paymentService.readyPayment(identifier, reservationRequest);
-    }
+//    @PostMapping("/api/reservations")
+//    public String createReservation(
+//        @Valid @RequestBody ReservationRequest reservationRequest,
+//        @Authorize({MemberType.normal, MemberType.curator}) MemberIdentifier identifier
+//    ) {
+//        return paymentService.readyPayment(identifier, reservationRequest);
+//    }
 
     @GetMapping("/kakaopay/redirect/approval")
     public String redirectKakaopayApproval(@RequestParam("pg_token") String pgToken, @RequestParam Long orderId) {

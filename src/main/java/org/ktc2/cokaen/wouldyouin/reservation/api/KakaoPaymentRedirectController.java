@@ -52,7 +52,7 @@ public class KakaoPaymentRedirectController {
         log.debug("출력되나용");
         paymentService.approvePaymentTest(orderId, pgToken);
 //        return "redirect:" + "https://wouldyouin.store/payview";
-        return "redirect:" + approvalDeepLink;
+        return "redirect:" + approvalDeepLink + "?pg_token=" + pgToken;
     }
 
     @GetMapping("payview")

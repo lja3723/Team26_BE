@@ -33,6 +33,11 @@ public class KakaoPaymentRedirectController {
     private final PaymentService paymentService;
 
 
+    @GetMapping("/redirectTest")
+    public String redirectTest() {
+        return "redirect:" + approvalDeepLink;
+    }
+
     @GetMapping("/kakaopay")
     public String redirectKakaopay(RedirectAttributes redirectAttribute) {
         return "redirect:" + paymentService.readyPaymentTest();

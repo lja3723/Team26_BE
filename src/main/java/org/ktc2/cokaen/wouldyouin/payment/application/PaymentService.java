@@ -108,7 +108,7 @@ public class PaymentService {
         payment.setTid(kakaoPayResponse.getTid());
         paymentRepository.save(payment);
         paymentRepository.flush();
-        return kakaoPayResponse.getNextRedirectMobileUrl() + "?orderId=" + payment.getPartnerOrderId();
+        return kakaoPayResponse.getAndroidAppScheme() + "?orderId=" + payment.getPartnerOrderId();
     }
 
     @Transactional

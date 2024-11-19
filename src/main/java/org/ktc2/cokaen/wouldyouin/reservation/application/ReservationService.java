@@ -6,19 +6,14 @@ import org.ktc2.cokaen.wouldyouin._common.exception.EntityNotFoundException;
 import org.ktc2.cokaen.wouldyouin._common.exception.UnauthorizedException;
 import org.ktc2.cokaen.wouldyouin.auth.MemberIdentifier;
 import org.ktc2.cokaen.wouldyouin.event.application.EventService;
+import org.ktc2.cokaen.wouldyouin.event.persist.Event;
 import org.ktc2.cokaen.wouldyouin.member.application.MemberService;
-import org.ktc2.cokaen.wouldyouin.payment.application.PaymentService;
-import org.ktc2.cokaen.wouldyouin.payment.dto.KakaoPayRequest;
-import org.ktc2.cokaen.wouldyouin.payment.dto.KakaoPayResponse;
-import org.ktc2.cokaen.wouldyouin.reservation.api.dto.KakaoPayReservationResponse;
 import org.ktc2.cokaen.wouldyouin.reservation.api.dto.ReservationRequest;
 import org.ktc2.cokaen.wouldyouin.reservation.api.dto.ReservationResponse;
 import org.ktc2.cokaen.wouldyouin.reservation.api.dto.ReservationSliceResponse;
 import org.ktc2.cokaen.wouldyouin.reservation.exception.ReservationNotFoundForReviewException;
 import org.ktc2.cokaen.wouldyouin.reservation.persist.Reservation;
 import org.ktc2.cokaen.wouldyouin.reservation.persist.ReservationRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -63,8 +58,8 @@ public class ReservationService {
             memberService.getByIdOrThrow(memberId),
             eventService.getByIdOrThrow(reservationRequest.getEventId()))
         );
-        eventService.decreaseLeftSeat(reservation.getEvent().getId(),
-            reservationRequest.getQuantity());
+        eventService.changeLeftSeat(reservation.getEvent().getId(),
+            reservationRequest.getQuantity() * -1);
         return ReservationResponse.from(reservation);
     }
 
@@ -74,16 +69,16 @@ public class ReservationService {
         Reservation reservation = reservationRepository.save(reservationRequest.toEntity(
             memberService.getByIdOrThrow(identifier.id()),
             eventService.getByIdOrThrow(reservationRequest.getEventId())));
-        eventService.decreaseLeftSeat(reservation.getEvent().getId(),
-            reservationRequest.getQuantity());
+        eventService.changeLeftSeat(reservation.getEvent().getId(),
+            reservationRequest.getQuantity() * -1);
         return ReservationResponse.from(reservation);
     }
 
     @Transactional
     public void delete(MemberIdentifier identifier, Long reservationId) {
         validateMemberId(identifier.id(), getByIdOrThrow(reservationId));
-        eventService.decreaseLeftSeat(-getByIdOrThrow(reservationId).getEvent().getId(),
-            getByIdOrThrow(reservationId).getQuantity());
+        Event event = getByIdOrThrow(reservationId).getEvent();
+        eventService.changeLeftSeat(event.getId(), getByIdOrThrow(reservationId).getQuantity());
         reservationRepository.deleteById(reservationId);
     }
 

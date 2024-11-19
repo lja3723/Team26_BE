@@ -147,6 +147,6 @@ public class Event {
     }
 
     public void decreaseLeftSeat(Integer count) {
-        this.leftSeat -= count;
+        this.leftSeat += count;
     }
 }

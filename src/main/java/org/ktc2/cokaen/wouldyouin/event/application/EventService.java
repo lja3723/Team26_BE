@@ -132,11 +132,13 @@ public class EventService {
     }
 
     @Transactional
-    public void decreaseLeftSeat(Long eventId, Integer count) {
+    public void changeLeftSeat(Long eventId, Integer count) {
         Event event = getByIdOrThrow(eventId);
         if (event.getLeftSeat() < count) {
             throw new NoLeftSeatException("남은 좌석이 부족합니다.");
         }
+        if (event.getLeftSeat() > event.getTotalSeat())
+            throw new NoLeftSeatException("좌석 관련 알 수 없는 오류");
         event.decreaseLeftSeat(count);
     }
 

@@ -32,7 +32,7 @@ public class KakaoPayRequest {
         MemberIdentifier identifier, Event event, ReservationRequest request,
         String approvalUrl, String cancelUrl, String failUrl) {
         return KakaoPayRequest.builder()
-            .cid("WOULDYOUIN")
+            .cid("TC0ONETIME")
             .partnerUserId(identifier.id() + "")
             .itemName(event.getTitle())
             .quantity(request.getQuantity() + "")

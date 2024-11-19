@@ -48,13 +48,16 @@ public class PaymentService {
     private String secretKey;
 
     @Transactional
-    public KakaoPayReservationResponse readyPayment(MemberIdentifier identifier, ReservationRequest reservationRequest) {
+    public String readyPayment(MemberIdentifier identifier, ReservationRequest reservationRequest) {
         KakaoPayRequest kakaoPayRequest =
             KakaoPayRequest.of(
                 identifier, eventService.getByIdOrThrow(reservationRequest.getEventId()),
                 reservationRequest, approvalUrl, cancelUrl, failUrl
             );
         Payment payment = paymentRepository.save(kakaoPayRequest.toEntity(reservationRequest));
+        paymentRepository.flush();
+        log.debug("kakaoPayRequest: {}", kakaoPayRequest);
+        log.debug("payment: {}", payment);
         KakaoPayResponse kakaoPayResponse = client.post(
             KakaoPayResponse.class,
             UriUtil.assembleFullUrl(kakaoPayRequestHost, kakaoPaySinglePaymentUrl),
@@ -66,11 +69,8 @@ public class PaymentService {
         );
         payment.setTid(kakaoPayResponse.getTid());
         paymentRepository.save(payment);
-//        kakaoPayResponse.setNextRedirectAppUrl(kakaoPayResponse.getNextRedirectAppUrl());
-        kakaoPayResponse.setNextRedirectAppUrl(kakaoPayResponse.getNextRedirectAppUrl() + "?orderId=" + payment.getPartnerOrderId());
-//        return kakaoPayResponse.getNextRedirectAppUrl() + "?orderId=" + payment.getPartnerOrderId();
-        return KakaoPayReservationResponse.builder().reservationResponse(null)
-            .kakaoPayResponse(kakaoPayResponse).build();
+        paymentRepository.flush();
+        return kakaoPayResponse.getNextRedirectAppUrl() + "?orderId=" + payment.getPartnerOrderId();
     }
 
     @Transactional
@@ -112,7 +112,7 @@ public class PaymentService {
     }
 
     @Transactional
-    public void approvePayment(Long orderId, String pgToken) {
+    public Long approvePayment(Long orderId, String pgToken) {
         Payment payment = paymentRepository.findById(orderId)
             .orElseThrow(() -> new FailedToPayException("결제 정보를 찾을 수 없습니다."));
         client.post(
@@ -126,6 +126,7 @@ public class PaymentService {
         );
         ReservationRequest request = new ReservationRequest(payment.getEventId(), payment.getQuantity());
         reservationService.create(payment.getPartnerUserId(), request);
+        return payment.getPartnerUserId();
     }
 
     @Transactional

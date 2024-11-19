@@ -35,7 +35,7 @@ public class KakaoPaymentRedirectController {
 
     @GetMapping("/redirectTest")
     public String redirectTest() {
-        return "redirect:" + approvalDeepLink;
+        return "redirect:" + approvalDeepLink + "?reservationId=7";
     }
 
     @GetMapping("/kakaopay")

@@ -70,7 +70,7 @@ public class PaymentService {
         payment.setTid(kakaoPayResponse.getTid());
         paymentRepository.save(payment);
         paymentRepository.flush();
-        return kakaoPayResponse.getNextRedirectPcUrl() + "?orderId=" + payment.getPartnerOrderId();
+        return kakaoPayResponse.getNextRedirectAppUrl() + "?orderId=" + payment.getPartnerOrderId();
     }
 
     @Transactional

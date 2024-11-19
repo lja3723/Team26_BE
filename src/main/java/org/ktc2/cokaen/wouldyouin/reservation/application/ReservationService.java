@@ -82,6 +82,8 @@ public class ReservationService {
     @Transactional
     public void delete(MemberIdentifier identifier, Long reservationId) {
         validateMemberId(identifier.id(), getByIdOrThrow(reservationId));
+        eventService.decreaseLeftSeat(-getByIdOrThrow(reservationId).getEvent().getId(),
+            getByIdOrThrow(reservationId).getQuantity());
         reservationRepository.deleteById(reservationId);
     }
 

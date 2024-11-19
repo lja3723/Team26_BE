@@ -67,6 +67,7 @@ public class PaymentService {
                 throw new FailedToPayException("카카오페이 API 요청을 실패하였습니다.");
             }
         );
+        log.debug("kakaoPayResponse: {}", kakaoPayResponse);
         payment.setTid(kakaoPayResponse.getTid());
         paymentRepository.save(payment);
         paymentRepository.flush();

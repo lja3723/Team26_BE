@@ -124,8 +124,9 @@ public class PaymentService {
                 throw new FailedToPayException("카카오페이 결제 승인을 실패하였습니다.");
             }
         );
+        paymentRepository.flush();
         ReservationRequest request = new ReservationRequest(payment.getEventId(), payment.getQuantity());
-        reservationService.create(payment.getPartnerOrderId(), request);
+        reservationService.create(payment.getPartnerUserId(), request);
         return payment.getPartnerUserId();
     }
 

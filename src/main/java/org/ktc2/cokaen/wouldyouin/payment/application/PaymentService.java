@@ -83,7 +83,6 @@ public class PaymentService {
             .eventId(1L)
             .itemName("아이템 이름")
             .build();
-        paymentRepository.save(payment);
 
         KakaoPayRequest kakaoPayRequest = KakaoPayRequest.builder()
             .cid("TC0ONETIME")
@@ -108,6 +107,7 @@ public class PaymentService {
         );
         payment.setTid(kakaoPayResponse.getTid());
         paymentRepository.save(payment);
+        paymentRepository.flush();
         return kakaoPayResponse.getNextRedirectPcUrl() + "?orderId=" + payment.getPartnerOrderId();
     }
 

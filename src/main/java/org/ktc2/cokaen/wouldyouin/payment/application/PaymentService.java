@@ -125,7 +125,7 @@ public class PaymentService {
             }
         );
         ReservationRequest request = new ReservationRequest(payment.getEventId(), payment.getQuantity());
-        reservationService.create(payment.getPartnerUserId(), request);
+        reservationService.create(payment.getPartnerOrderId(), request);
         return payment.getPartnerUserId();
     }
 

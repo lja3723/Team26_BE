@@ -126,8 +126,7 @@ public class PaymentService {
         );
         paymentRepository.flush();
         ReservationRequest request = new ReservationRequest(payment.getEventId(), payment.getQuantity());
-        reservationService.create(payment.getPartnerUserId(), request);
-        return payment.getPartnerUserId();
+        return reservationService.create(payment.getPartnerUserId(), request).getId();
     }
 
     @Transactional

@@ -10,22 +10,16 @@ import org.ktc2.cokaen.wouldyouin.event.application.EventService;
 import org.ktc2.cokaen.wouldyouin.member.application.MemberService;
 import org.ktc2.cokaen.wouldyouin.payment.dto.KakaoPayRequest;
 import org.ktc2.cokaen.wouldyouin.payment.dto.KakaoPayResponse;
-import org.ktc2.cokaen.wouldyouin.payment.dto.PayCompleteRequest;
 import org.ktc2.cokaen.wouldyouin.payment.dto.PayCompleteResponse;
 import org.ktc2.cokaen.wouldyouin.payment.exception.FailedToPayException;
 import org.ktc2.cokaen.wouldyouin.payment.persist.Payment;
 import org.ktc2.cokaen.wouldyouin.payment.persist.PaymentRepository;
-import org.ktc2.cokaen.wouldyouin.reservation.api.dto.KakaoPayReservationResponse;
 import org.ktc2.cokaen.wouldyouin.reservation.api.dto.ReservationRequest;
-import org.ktc2.cokaen.wouldyouin.reservation.api.dto.ReservationResponse;
 import org.ktc2.cokaen.wouldyouin.reservation.application.ReservationService;
-import org.ktc2.cokaen.wouldyouin.reservation.persist.Reservation;
 import org.ktc2.cokaen.wouldyouin.reservation.persist.ReservationRepository;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestClient;
 
 @Slf4j
 @Service
@@ -60,7 +54,7 @@ public class PaymentService {
                 reservationRequest, approvalUrl, cancelUrl, failUrl
             );
         Payment payment = paymentRepository.save(kakaoPayRequest.toEntity(reservationRequest));
-        KakaoPayResponse kakaoPayResponse =  client.post(
+        KakaoPayResponse kakaoPayResponse = client.post(
             KakaoPayResponse.class,
             UriUtil.assembleFullUrl(kakaoPayRequestHost, kakaoPaySinglePaymentUrl),
             KakaoPayUtil.createKakaoPayRequestHeaders(kakaoPayRequestHost, secretKey),
@@ -71,7 +65,7 @@ public class PaymentService {
         );
         payment.setTid(kakaoPayResponse.getTid());
         paymentRepository.save(payment);
-        return kakaoPayResponse.getAndroidAppScheme() + "?orderId=" + payment.getPartnerOrderId();
+        return kakaoPayResponse.getNextRedirectAppUrl() + "?orderId=" + payment.getPartnerOrderId();
     }
 
     @Transactional
@@ -98,7 +92,7 @@ public class PaymentService {
             .failUrl(failUrl)
             .build();
 
-        KakaoPayResponse kakaoPayResponse =  client.post(
+        KakaoPayResponse kakaoPayResponse = client.post(
             KakaoPayResponse.class,
             UriUtil.assembleFullUrl(kakaoPayRequestHost, kakaoPaySinglePaymentUrl),
             KakaoPayUtil.createKakaoPayRequestHeaders(kakaoPayRequestHost, secretKey),

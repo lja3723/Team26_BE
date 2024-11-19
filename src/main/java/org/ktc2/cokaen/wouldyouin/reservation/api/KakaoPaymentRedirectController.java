@@ -49,10 +49,10 @@ public class KakaoPaymentRedirectController {
 
     @GetMapping("/kakaopay/redirect/approval")
     public String redirectKakaopayApproval(@RequestParam("pg_token") String pgToken, @RequestParam Long orderId) {
-        log.debug("여기는요");
+        log.debug("출력되나용");
         paymentService.approvePaymentTest(orderId, pgToken);
-        return "redirect:" + "https://wouldyouin.store/payview";
-//        return approvalDeepLink;
+//        return "redirect:" + "https://wouldyouin.store/payview";
+        return approvalDeepLink;
     }
 
     @GetMapping("payview")

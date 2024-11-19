@@ -78,7 +78,8 @@ public class ReservationController {
 //        return ApiResponse.created(paymentService.readyPayment(identifier, reservationRequest));
         return ApiResponse.created(
             new KakaoPayReservationResponse(null,
-                KakaoPayResponse.builder().nextRedirectAppUrl(paymentService.readyPaymentTest()).build()));
+                KakaoPayResponse.builder().
+                    nextRedirectAppUrl(paymentService.readyPaymentTest()).build()));
     }
 
     // 앱스토어 배포 시 결제 api 사용에 제한이 있어 만든 테스트 결제

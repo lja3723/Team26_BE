@@ -1,18 +1,15 @@
 package org.ktc2.cokaen.wouldyouin.reservation.api;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.ktc2.cokaen.wouldyouin.auth.Authorize;
-import org.ktc2.cokaen.wouldyouin.auth.MemberIdentifier;
-import org.ktc2.cokaen.wouldyouin.member.persist.MemberType;
+import org.ktc2.cokaen.wouldyouin._common.api.ApiResponse;
+import org.ktc2.cokaen.wouldyouin._common.api.ApiResponseBody;
 import org.ktc2.cokaen.wouldyouin.payment.application.PaymentService;
-import org.ktc2.cokaen.wouldyouin.reservation.api.dto.ReservationRequest;
+import org.ktc2.cokaen.wouldyouin.reservation.api.dto.KakaoPayReservationResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -32,30 +29,17 @@ public class KakaoPaymentRedirectController {
 
     private final PaymentService paymentService;
 
-
-    @GetMapping("/redirectTest")
-    public String redirectTest() {
-        return "redirect:" + approvalDeepLink + "?reservationId=7";
-    }
-
-    @GetMapping("/kakaopay")
-    public String redirectKakaopay(RedirectAttributes redirectAttribute) {
+    @GetMapping("/why")
+    public String payTest() {
         return "redirect:" + paymentService.readyPaymentTest();
     }
-
-//    @PostMapping("/api/reservations")
-//    public String createReservation(
-//        @Valid @RequestBody ReservationRequest reservationRequest,
-//        @Authorize({MemberType.normal, MemberType.curator}) MemberIdentifier identifier
-//    ) {
-//        return paymentService.readyPayment(identifier, reservationRequest);
-//    }
 
     @GetMapping("/kakaopay/redirect/approval")
     public String redirectKakaopayApproval(
         @RequestParam("pg_token") String pgToken, @RequestParam Long orderId) {
-        log.debug("실행되는지 확인 테스트");
-        return "redirect:" + "wouldyouin://booking/kakao/check/payment_approve" + "?reservationId=" + "1";
+        log.debug("실행되는지 확인 테스트 pg: {}, id: {}", pgToken, orderId);
+        return "redirect:/payview";
+//        return "redirect:" + "wouldyouin://booking/kakao/check/payment_approve" + "?reservationId=" + "1";
 //            paymentService.approvePayment(orderId, pgToken);
 //        Long reservationId = paymentService.approvePayment(orderId, pgToken);
 //        return "redirect:" + "wouldyouin://booking/kakao/check/payment_approve" + "?reservationId=" + reservationId;

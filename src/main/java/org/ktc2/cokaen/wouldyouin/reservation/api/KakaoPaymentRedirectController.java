@@ -53,11 +53,10 @@ public class KakaoPaymentRedirectController {
 
     @GetMapping("/kakaopay/redirect/approval")
     public String redirectKakaopayApproval(
-        @RequestParam("pg_token") String pgToken, @RequestParam Long orderId) {
-//        return "redirect:" + approvalDeepLink + "?reservationId=" + paymentService.approvePayment(orderId, pgToken);
-        Long reservationId = paymentService.approvePayment(orderId, pgToken);
+        @RequestParam(value = "pg_token", required = false) String pgToken, @RequestParam(value = "1", required = false) Long orderId) {
+        return "redirect:/" + approvalDeepLink + "?reservationId=" + paymentService.approvePayment(orderId, pgToken);
+//        Long reservationId = paymentService.approvePayment(orderId, pgToken);
 //        return "redirect:" + "wouldyouin://booking/kakao/check/payment_approve" + "?reservationId=" + reservationId;
-        return "redirect:payview";
     }
 
     @GetMapping("payview")

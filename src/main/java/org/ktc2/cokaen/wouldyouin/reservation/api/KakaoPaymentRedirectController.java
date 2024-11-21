@@ -38,12 +38,12 @@ public class KakaoPaymentRedirectController {
     public String redirectKakaopayApproval(
         @RequestParam("pg_token") String pgToken, @RequestParam Long orderId) {
         log.debug("실행되는지 확인 테스트 pg: {}, id: {}", pgToken, orderId);
-        paymentService.approvePaymentTest(orderId, pgToken);
-        return "redirect:/payview";
+//        paymentService.approvePaymentTest(orderId, pgToken);
+//        return "redirect:/payview";
 //        return "redirect:" + "wouldyouin://booking/kakao/check/payment_approve" + "?reservationId=" + "1";
 //            paymentService.approvePayment(orderId, pgToken);
-//        Long reservationId = paymentService.approvePayment(orderId, pgToken);
-//        return "redirect:" + "wouldyouin://booking/kakao/check/payment_approve" + "?reservationId=" + reservationId;
+        Long reservationId = paymentService.approvePayment(orderId, pgToken);
+        return "redirect:" + "wouldyouin://booking/kakao/check/payment_approve" + "?reservationId=" + reservationId;
     }
 
     @GetMapping("payview")

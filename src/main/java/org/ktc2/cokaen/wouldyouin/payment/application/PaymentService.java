@@ -72,6 +72,7 @@ public class PaymentService {
         paymentRepository.save(payment);
         paymentRepository.flush();
         return kakaoPayResponse.getNextRedirectAppUrl() + "?orderId=" + payment.getPartnerOrderId();
+
     }
 
     @Transactional

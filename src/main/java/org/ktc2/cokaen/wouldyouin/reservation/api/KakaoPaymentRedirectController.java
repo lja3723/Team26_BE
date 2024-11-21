@@ -53,7 +53,7 @@ public class KakaoPaymentRedirectController {
 
     @GetMapping("/kakaopay/redirect/approval")
     public String redirectKakaopayApproval(
-        @RequestParam(value = "pg_token", required = false) String pgToken, @RequestParam(value = "1", required = false) Long orderId) {
+        @RequestParam("pg_token") String pgToken, @RequestParam(value = "1", required = false) Long orderId) {
         log.debug("실행되는지 확인 테스트");
         return "redirect:" + approvalDeepLink + "?reservationId=" + "1";
 //            paymentService.approvePayment(orderId, pgToken);
@@ -69,14 +69,14 @@ public class KakaoPaymentRedirectController {
     @GetMapping("/kakaopay/redirect/cancel")
     public String redirectKakaopayCancel(@RequestParam("pg_token") String pgToken) {
         String redirectDeeplink = "redirect:" + cancelDeepLink + "?pg_token=" + pgToken;
-        log.debug("#### redirectDeeplink = {}", redirectDeeplink);
+        log.debug("#### 캔슬 = {}", redirectDeeplink);
         return redirectDeeplink;
     }
 
     @GetMapping("/kakaopay/redirect/fail")
     public String redirectKakaopayFail(@RequestParam("pg_token") String pgToken) {
         String redirectDeeplink = "redirect:" + failDeepLink + "?pg_token=" + pgToken;
-        log.debug("#### redirectDeeplink = {}", redirectDeeplink);
+        log.debug("#### 페일 = {}", redirectDeeplink);
         return redirectDeeplink;
     }
 }

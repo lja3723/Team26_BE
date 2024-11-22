@@ -1,7 +1,9 @@
 package org.ktc2.cokaen.wouldyouin._common.aop;
 
+import io.jsonwebtoken.lang.Objects;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.URLDecoder;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +41,15 @@ public class Logger {
         long timeInMs;
         Object result;
         log.debug("{} : CALL {}", packageName, methodName);
-        log.debug("{} :     with param = {}", packageName, args);
+        log.debug("{} :     with param = {}", packageName, Arrays.stream(args)
+            .map(obj -> {
+                // byte[] 는 로깅하지 않음
+                if (obj instanceof byte[]) {
+                    return "'object of byte[]'";
+                }
+                return Objects.nullSafeToString(obj);
+            })
+            .toArray());
 
         try {
             result = joinPoint.proceed();
@@ -52,7 +62,13 @@ public class Logger {
             log.debug("{} :     with executeTime = {}ms", packageName, timeInMs);
         }
 
-        log.debug("{} :     with return      = {}", packageName, result);
+        // byte[] 는 로깅하지 않음
+        String resultToString = Objects.nullSafeToString(result);
+        if (result instanceof byte[]) {
+            resultToString = "'object of byte[]'";
+        }
+
+        log.debug("{} :     with return      = {}", packageName, resultToString);
 
         return result;
     }

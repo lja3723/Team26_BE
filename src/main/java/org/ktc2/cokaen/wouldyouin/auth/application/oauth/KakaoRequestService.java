@@ -45,7 +45,7 @@ public class KakaoRequestService extends OauthRequestService {
     @Value("${oauth.kakao.client.secret}")
     private String clientSecret;
 
-    @Value("${oauth.kakao.redirect_uri}")
+    @Value("${oauth.kakao.redirect.uri}")
     private String redirectUri;
 
     @Override

@@ -42,7 +42,7 @@ public class GoogleRequestService extends OauthRequestService {
     @Value("${oauth.google.client.secret}")
     private String clientSecret;
 
-    @Value("${oauth.google.redirect_uri}")
+    @Value("${oauth.google.redirect.uri}")
     private String redirectUri;
 
     private final RestClientUtil client;

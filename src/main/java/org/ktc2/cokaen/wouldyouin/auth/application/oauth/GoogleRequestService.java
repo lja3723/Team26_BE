@@ -3,6 +3,7 @@ package org.ktc2.cokaen.wouldyouin.auth.application.oauth;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.annotation.PostConstruct;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
 
 @Slf4j
 @Service
@@ -87,7 +89,10 @@ public class GoogleRequestService extends OauthRequestService {
 
         AccessTokenResponse authenticationResponse = client.post(
             AccessTokenResponse.class, loginRequestUri, loginRequestHeaders, request,
-            (req, response) -> { throw new FailAccessTokenGetException("구글 액세스 토큰을 가져오는데 실패했습니다."); });
+            (req, response) -> {
+                log.debug("#### response body = {}", StreamUtils.copyToString(response.getBody(), StandardCharsets.UTF_8));
+                throw new FailAccessTokenGetException("구글 액세스 토큰을 가져오는데 실패했습니다.");
+            });
 
         Objects.requireNonNull(authenticationResponse);
         GoogleAccessRequestResponse result = client.get(

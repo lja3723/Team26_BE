@@ -4,13 +4,17 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @JsonNaming(SnakeCaseStrategy.class)
+@EqualsAndHashCode
+@ToString
 public class OauthRequest {
 
     private final String grantType;
